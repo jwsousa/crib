@@ -1,18 +1,23 @@
-var deck = new Object();
-var card = new Object(face, suit);
-    this.face = face;
-    this.suit = suit;
+function Card(suit, face){
+  this.suit = suit;
+  this.face = face;
+  this.print = function(){
+    console.log("Card:"+ this.suit + " " + this.face);
+  };
+}
 
-  if (card%4 === 0){
+function makeCard(index){
+  if (index%4 === 0){
     suit = "H";
-  }else if (card%4 == 1){
+  }else if (index%4 == 1){
     suit = "D";
-  }else if (card%4 == 2){
+  }else if (index%4 == 2){
     suit = "C";
-  }else if (card%4 == 3){
+  }else if (index%4 == 3){
     suit = "S";
   }
-  var score = card%13;
+
+  var score = index%13;
   var face = score;
 
   if (score === 0){
@@ -25,3 +30,15 @@ var card = new Object(face, suit);
     score = 10;
     face = "King";
   }
+  return new Card(suit, face);
+}
+
+function makeDeck(){
+  var deck = []
+  for (i=0;i<52;i++){
+    card = makeCard(i);
+    // card.print();
+    deck[i] = card;
+  }
+  console.debug(deck);
+}
