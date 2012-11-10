@@ -50,8 +50,8 @@ function shuffleDeck(deck) {
   if ( i == 0 ) return false;
   while ( --i ) {
     var j = Math.floor( Math.random() * ( i + 1 ) );
-    var tempi = myArray[i];
-    var tempj = myArray[j];
+    var tempi = deck[i];
+    var tempj = deck[j];
     deck[i] = tempj;
     deck[j] = tempi;
   }
