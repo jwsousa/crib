@@ -33,6 +33,13 @@ function makeCard(index){
   return new Card(suit, face);
 }
 
+function printDeck(deck){
+  for (i=0;i<52;i++){
+    deck[i].print();
+  }
+  consol.log();
+}
+
 function makeDeck(){
   var deck = []
   for (i=0;i<52;i++){
