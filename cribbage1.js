@@ -2,8 +2,11 @@ function Card(suit, face){
   this.suit = suit;
   this.face = face;
   this.print = function(){
-    console.log("Card:"+ this.suit + " " + this.face);
+    console.log("Card:"+ this.toString());
   };
+  this.toString = function(){
+    return this.suit + " " + this.face;
+  }
 }
 
 function makeCard(index){
@@ -48,9 +51,9 @@ function makeDeck(){
     // card.print();
     deck[i] = card;
   }
-  printDeck(deck);
   shuffleDeck(deck);
-  printDeck(deck);
+  return deck;
+
 }
 
 function shuffleDeck(deck) {
@@ -64,3 +67,18 @@ function shuffleDeck(deck) {
     deck[j] = tempi;
   }
 }
+
+function deal(){
+  var deck = makeDeck();
+  var hand1 = deck.slice(0,6);
+  var hand2 = deck.slice(6,12);
+  var flip = deck[12];
+  console.log("hand1: " + hand1.join(" "));
+  console.debug(hand2);
+  console.debug(flip);
+}
+
+function printHand(hand){
+conosole.log()
+}
+
