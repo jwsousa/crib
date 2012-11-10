@@ -25,3 +25,15 @@ var card = new Object(face, suit);
     score = 10;
     face = "King";
   }
+
+function shuffleDeck(deck) {
+  var i = deck.length;
+  if ( i == 0 ) return false;
+  while ( --i ) {
+    var j = Math.floor( Math.random() * ( i + 1 ) );
+    var tempi = myArray[i];
+    var tempj = myArray[j];
+    deck[i] = tempj;
+    deck[j] = tempi;
+  }
+}
