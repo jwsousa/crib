@@ -37,7 +37,7 @@ function printDeck(deck){
   for (i=0;i<52;i++){
     deck[i].print();
   }
-  consol.log();
+  console.log();
 }
 
 function makeDeck(){
@@ -47,9 +47,9 @@ function makeDeck(){
     // card.print();
     deck[i] = card;
   }
-  console.debug(deck);
+  printDeck(deck);
   shuffleDeck(deck);
-  console.debug(deck);
+  printDeck(deck);
 }
 
 function shuffleDeck(deck) {
