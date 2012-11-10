@@ -34,10 +34,11 @@ function makeCard(index){
 }
 
 function printDeck(deck){
+  console.log('Deck:');
   for (i=0;i<52;i++){
     deck[i].print();
   }
-  console.log();
+  console.log('\n\n');
 }
 
 function makeDeck(){
