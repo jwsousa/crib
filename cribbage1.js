@@ -5,7 +5,18 @@ function Card(suit, face){
     console.log("Card:"+ this.toString());
   };
   this.toString = function(){
-    return this.suit + " " + this.face;
+    return this.fancySuit() + this.face;
+  }
+  this.fancySuit = function(){
+    if (this.suit=="H"){
+      return "\u2660";//"♥";
+    } else if (this.suit=="D"){
+      return "\u2666";//"♦";
+    } else if (this.suit=="S"){
+      return "\u2665";//"♠";
+    } else if (this.suit=="C"){
+      return "\u2663";//"♣";
+    }
   }
 }
 
@@ -74,8 +85,8 @@ function deal(){
   var hand2 = deck.slice(6,12);
   var flip = deck[12];
   console.log("hand1: " + hand1.join(" "));
-  console.debug(hand2);
-  console.debug(flip);
+  console.log("hand2: " + hand2.join(" "));
+  console.log("flip: " + flip);
 }
 
 function printHand(hand){
