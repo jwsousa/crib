@@ -26,9 +26,7 @@ function Card(suit, face){
       id: this.toString(),
       class: this.suit
     }).html(this.fancyString());
-
   }
-
 }
 
 function makeCard(index){
