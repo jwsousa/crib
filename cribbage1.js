@@ -87,7 +87,7 @@ function deal(){
 
   $('.hand1 .cards').html(hand1.join(" "));
   $('.hand2 .cards').html(hand2.join(" "));
-  $('.flip .cards').html(flip.join(" "));
+  $('.flip .cards').html(flip.join("" ));
 
 }
 
