@@ -24,9 +24,7 @@ function Card(suit, face){
   this.toHTML = function(){
     return $('<div/>', {
       id: this.toString(),
-      class: 'card',
-      suit: this.suit
-
+      class: this.suit
     }).html(this.fancyString());
 
   }
