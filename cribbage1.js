@@ -83,10 +83,12 @@ function deal(){
   var deck = makeDeck();
   var hand1 = deck.slice(0,6);
   var hand2 = deck.slice(6,12);
-  var flip = deck[12];
-  console.log("hand1: " + hand1.join(" "));
-  console.log("hand2: " + hand2.join(" "));
-  console.log("flip: " + flip);
+  var flip = deck.slice(12,13);
+
+  $('.hand1 .cards').html(hand1.join(" "));
+  $('.hand2 .cards').html(hand2.join(" "));
+  $('.flip .cards').html(flip.join(" "));
+
 }
 
 function printHand(hand){
