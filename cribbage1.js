@@ -27,7 +27,6 @@ function Card(suit, face){
     html.addClass(this.suit);
     return html;
   }
-
 }
 
 function makeCard(index){
