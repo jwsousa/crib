@@ -22,11 +22,10 @@ function Card(suit, face){
     }
   }
   this.toHTML = function(){
-    return $('<div/>', {
-      id: this.toString(),
-      class: this.suit
-    }).html(this.fancyString());
-
+    html = $('<div/>').html(this.fancyString());
+    html.addClass('card');
+    html.addClass(this.suit);
+    return html;
   }
 
 }
