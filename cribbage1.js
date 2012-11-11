@@ -98,20 +98,43 @@ function setCards(hand, cards){
     cards_div.append(card.toHTML());
   }
 }
-
+var deck;
 function deal(){
-  var deck = makeDeck();
+  setUnflipped('flip', 1);
+  deck = makeDeck();
   var hand1 = deck.slice(0,6);
   var hand2 = deck.slice(6,12);
-  var flip = deck.slice(12,13);
 
   setCards('hand1', hand1);
   setCards('hand2', hand2);
-  setCards('flip', flip);
+}
 
+function cut(){
+  var flip = deck.slice(12,13);
+  setCards('flip', flip);
 }
 
 function printHand(hand){
 conosole.log()
 }
 
+function makeUnflippedCard(){
+   html = $('<div/>').html('\u2622');
+   html.addClass('card');
+   html.addClass('unflipped');
+   return html;
+}
+
+function setUnflipped(hand, number){
+  cards_div = $('.' + hand + ' .cards');
+  cards_div.html('');
+  for (var i=0;i<number;i++){
+    cards_div.append(makeUnflippedCard());
+  }
+}
+
+function setAllUnflipped(){
+  setUnflipped('flip', 1);
+  setUnflipped('hand1', 6);
+  setUnflipped('hand2', 6);
+}
