@@ -119,7 +119,7 @@ conosole.log()
 }
 
 function makeUnflippedCard(){
-   html = $('<div/>').html('\u2622');
+   html = $('<div/>').html('\u2623');
    html.addClass('card');
    html.addClass('unflipped');
    return html;
