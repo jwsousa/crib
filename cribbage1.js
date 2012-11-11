@@ -12,13 +12,13 @@ function Card(suit, face){
   }
   this.fancySuit = function(){
     if (this.suit=="H"){
-      return "\u2660";//"♥";
+      return "\u2665";
     } else if (this.suit=="D"){
-      return "\u2666";//"♦";
+      return "\u2666";
     } else if (this.suit=="S"){
-      return "\u2665";//"♠";
+      return "\u2660";
     } else if (this.suit=="C"){
-      return "\u2663";//"♣";
+      return "\u2663";
     }
   }
   this.toHTML = function(){
@@ -45,13 +45,15 @@ function makeCard(index){
 
   if (score === 0){
     score = 10;
-    face = "Jack";
+    face = "J";
   }if (score == 11){
     score = 10;
-    face = "Queen";
+    face = "Q";
   }if (score == 12){
     score = 10;
-    face = "King";
+    face = "K";
+  }if (score == 1){
+    face = "A"
   }
   return new Card(suit, face);
 }
