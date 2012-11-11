@@ -5,6 +5,9 @@ function Card(suit, face){
     console.log("Card:"+ this.toString());
   };
   this.toString = function(){
+    return this.suit + this.face;
+  }
+  this.fancyString = function(){
     return this.fancySuit() + this.face;
   }
   this.fancySuit = function(){
@@ -18,6 +21,16 @@ function Card(suit, face){
       return "\u2663";//"♣";
     }
   }
+  this.toHTML = function(){
+    return $('<div/>', {
+      id: this.toString(),
+      class: 'card',
+      suit: this.suit
+
+    }).html(this.fancyString());
+
+  }
+
 }
 
 function makeCard(index){
@@ -79,15 +92,24 @@ function shuffleDeck(deck) {
   }
 }
 
+function setCards(hand, cards){
+  cards_div = $('.' + hand + ' .cards');
+  cards_div.html('');
+  for (var i=0;i<cards.length;i++){
+    card = cards[i];
+    cards_div.append(card.toHTML());
+  }
+}
+
 function deal(){
   var deck = makeDeck();
   var hand1 = deck.slice(0,6);
   var hand2 = deck.slice(6,12);
   var flip = deck.slice(12,13);
 
-  $('.hand1 .cards').html(hand1.join(" "));
-  $('.hand2 .cards').html(hand2.join(" "));
-  $('.flip .cards').html(flip.join("" ));
+  setCards('hand1', hand1);
+  setCards('hand2', hand2);
+  setCards('flip', flip);
 
 }
 
