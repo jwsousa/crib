@@ -2,7 +2,7 @@ function Card(suit, face){
   this.suit = suit;
   this.face = face;
   this.print = function(){
-    console.log("Card:"+ this.toString());
+    console.log('Card:'+ this.toString());
   };
   this.toString = function(){
     return this.suit + this.face;
@@ -11,18 +11,44 @@ function Card(suit, face){
     return this.fancySuit() + this.face;
   }
   this.fancySuit = function(){
-    if (this.suit=="H"){
-      return "\u2665";
-    } else if (this.suit=="D"){
-      return "\u2666";
-    } else if (this.suit=="S"){
-      return "\u2660";
-    } else if (this.suit=="C"){
-      return "\u2663";
+    if (this.suit=='H'){
+      return '\u2665';
+    } else if (this.suit=='D'){
+      return '\u2666';
+    } else if (this.suit=='S'){
+      return '\u2660';
+    } else if (this.suit=='C'){
+      return '\u2663';
     }
   }
+  this.htmlCode = function(){
+    var code = '&#x1F0';
+    if (this.suit=='S'){
+      code += 'A';
+    } else if (this.suit=='H'){
+      code += 'B';
+    } else if (this.suit=='D'){
+      code += 'C';
+    } else if (this.suit=='C'){
+      code += 'D';
+    }
+    if (this.face=='10'){
+      code += 'A';
+    } else if (this.face=='J'){
+      code += 'B';
+    } else if (this.face=='Q'){
+      code += 'D';
+    } else if (this.face=='K'){
+      code += 'E';
+    }else{
+      code += this.face;
+    }
+    code += ';';
+    return code;
+  }
   this.toHTML = function(){
-    html = $('<div/>').html(this.fancyString());
+    // html = $('<div/>').html(this.fancyString());
+    html = $('<div/>').html(this.htmlCode());
     html.addClass('card');
     html.addClass(this.suit);
     return html;
@@ -31,13 +57,13 @@ function Card(suit, face){
 
 function makeCard(index){
   if (index%4 === 0){
-    suit = "H";
+    suit = 'H';
   }else if (index%4 == 1){
-    suit = "D";
+    suit = 'D';
   }else if (index%4 == 2){
-    suit = "C";
+    suit = 'C';
   }else if (index%4 == 3){
-    suit = "S";
+    suit = 'S';
   }
 
   var score = index%13;
@@ -45,15 +71,15 @@ function makeCard(index){
 
   if (score === 0){
     score = 10;
-    face = "J";
+    face = 'J';
   }if (score == 11){
     score = 10;
-    face = "Q";
+    face = 'Q';
   }if (score == 12){
     score = 10;
-    face = "K";
+    face = 'K';
   }if (score == 1){
-    face = "A"
+    face = 'A'
   }
   return new Card(suit, face);
 }
@@ -115,11 +141,12 @@ function cut(){
 }
 
 function printHand(hand){
-conosole.log()
+  conosole.log()
 }
 
 function makeUnflippedCard(){
-   html = $('<div/>').html('\u2623');
+   // html = $('<div/>').html('\u2623');
+   html = $('<div/>').html('&#x1f0a0;');
    html.addClass('card');
    html.addClass('unflipped');
    return html;
