@@ -165,3 +165,7 @@ function setAllUnflipped(){
   setUnflipped('hand1', 6);
   setUnflipped('hand2', 6);
 }
+
+function scoreHand(){
+
+}
