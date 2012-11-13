@@ -1,3 +1,5 @@
+"use strict";
+
 function Card(suit, face){
   this.suit = suit;
   this.face = face;
@@ -117,7 +119,7 @@ function shuffleDeck(deck) {
 }
 
 function setCards(hand, cards){
-  cards_div = $('.' + hand + ' .cards');
+  var cards_div = $('.' + hand + ' .cards');
   cards_div.html('');
   for (var i=0;i<cards.length;i++){
     card = cards[i];
@@ -146,14 +148,14 @@ function printHand(hand){
 
 function makeUnflippedCard(){
    // html = $('<div/>').html('\u2623');
-   html = $('<div/>').html('&#x1f0a0;');
+   var html = $('<div/>').html('&#x1f0a0;');
    html.addClass('card');
    html.addClass('unflipped');
    return html;
 }
 
 function setUnflipped(hand, number){
-  cards_div = $('.' + hand + ' .cards');
+  var cards_div = $('.' + hand + ' .cards');
   cards_div.html('');
   for (var i=0;i<number;i++){
     cards_div.append(makeUnflippedCard());
