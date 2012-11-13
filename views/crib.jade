@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1#header Cards are Great
+  .game
+    .flip
+      .cards.
+    .hand1
+      h3 Hand #1:
+      .cards
+    .hand2
+      h3 Hand #2:
+      .cards
+
+    a#deal.button(onClick='deal();') Deal
+    a#cut.button(onClick='cut();') Cut
+    script
+      setAllUnflipped();

@@ -50,7 +50,7 @@ function Card(suit, face){
   }
   this.toHTML = function(){
     // html = $('<div/>').html(this.fancyString());
-    html = $('<div/>').html(this.htmlCode());
+    var html = $('<div/>').html(this.htmlCode());
     html.addClass('card');
     html.addClass(this.suit);
     return html;
@@ -58,6 +58,7 @@ function Card(suit, face){
 }
 
 function makeCard(index){
+  var suit = null;
   if (index%4 === 0){
     suit = 'H';
   }else if (index%4 == 1){
@@ -88,7 +89,7 @@ function makeCard(index){
 
 function printDeck(deck){
   console.log('Deck:');
-  for (i=0;i<52;i++){
+  for (var i=0;i<52;i++){
     deck[i].print();
   }
   console.log('\n\n');
@@ -96,8 +97,8 @@ function printDeck(deck){
 
 function makeDeck(){
   var deck = []
-  for (i=0;i<52;i++){
-    card = makeCard(i);
+  for (var i=0;i<52;i++){
+    var card = makeCard(i);
     // card.print();
     deck[i] = card;
   }
@@ -122,7 +123,7 @@ function setCards(hand, cards){
   var cards_div = $('.' + hand + ' .cards');
   cards_div.html('');
   for (var i=0;i<cards.length;i++){
-    card = cards[i];
+    var card = cards[i];
     cards_div.append(card.toHTML());
   }
 }
