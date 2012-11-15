@@ -16,8 +16,15 @@
   text-align: center;
 }
 .card.D {
-  color:red;}
-.card.H {color:red;}
+  color:red;
+}
+.card.H {
+  color:red;
+}
+
+.card.selected {
+  border-color:red;
+}
 
 .button {
   display: inline-block;

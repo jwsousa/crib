@@ -4,15 +4,41 @@ block content
   h1#header Cards are Great
   .game
     .flip
-      .cards.
+      .cards
+        .card.card0
     .hand1
       h3 Hand #1:
       .cards
+        .card.card0
+        .card.card1
+        .card.card2
+        .card.card3
+        .card.card4
+        .card.card5
     .hand2
       h3 Hand #2:
       .cards
+        .card.card0
+        .card.card1
+        .card.card2
+        .card.card3
+        .card.card4
+        .card.card5
 
-    a#deal.button(onClick='deal();') Deal
-    a#cut.button(onClick='cut();') Cut
+    a#hand1.button(onClick='showHand(1);') Show Hand1
+    a#hand1.button(onClick='showHand(2);') Show Hand2
+    //- a#cut.button(onClick='showHand(0);') Cut
     script
+      makeHandDivsMap();
+
       setAllUnflipped();
+      var socket = io.connect('http://localhost');
+      var hand_index;
+      var hand;
+
+      socket.on('hand', function (data) {
+        hand = data['hand'];
+        hand_index = data['index'];
+        setCardsOnPage();
+        makeCribSelectable();
+      });

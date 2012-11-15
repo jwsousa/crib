@@ -4,12 +4,12 @@
  */
 
 var express = require('express')
+  , app = express()
   , routes = require('./routes')
   , crib = require('./routes/crib')
   , http = require('http')
   , path = require('path');
 
-var app = express();
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -30,6 +30,28 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/crib', crib.index);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = require('http').createServer(app);
+server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
+});
+
+var crib = require('./crib');
+var deck = crib.makeDeck();
+var hands = crib.makeHands(deck);
+console.log(hands);
+var io = require('socket.io').listen(server)
+
+io.sockets.on('connection', function (socket) {
+  socket.on('get deck', function () {
+    socket.emit('deck', {'deck': deck});
+  });
+
+  socket.on('get hand', function (index) {
+    socket.emit('hand',
+      {'index': index, 'hand': hands[index]});
+  });
+
+  socket.on('crib selected', function (data) {
+    console.log(data)
+  });
 });
