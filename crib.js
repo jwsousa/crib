@@ -36,11 +36,17 @@ exports.Game = function(io){
     }
   }
   this.startGame = function(){
+    this.io.sockets.in(this.name).emit('set cards',
+      {'section': 'crib',
+       'cards': []]});
+
    this.pushHand('player');
    this.pushHand('dealer');
     // this.io.sockets.in(this.name).emit('need crib');
+
    this.requestCrib('player');
    this.requestCrib('dealer');
+
   }
   this.addCrib = function(playerName, cardIndices){
     var crib = this.cards['crib'];
