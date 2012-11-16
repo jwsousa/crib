@@ -12,6 +12,7 @@ exports.Game = function(io){
   this.playersById = {};
   this.oponent = {'player': 'dealer', 'dealer': 'player'};
 
+
   this.setDealer = function(socket){
     this.sockets['dealer'] = socket;
     this.playersById[socket.id] = 'dealer';
@@ -24,6 +25,7 @@ exports.Game = function(io){
     this.playersById[socket.id] = 'player';
     this.playerCount++;
     this.setAllUnflipped('player');
+    this.sendToRoom('You are NOT the dealer.');
   }
   this.addClient = function(socket){
     if(this.playerCount==0){
@@ -39,7 +41,7 @@ exports.Game = function(io){
     this.io.sockets.in(this.name).emit('set cards',
       {'section': 'crib',
        'cards': []});
-    this.sendToRoom('');
+
 
    this.pushHand('player');
    this.pushHand('dealer');
