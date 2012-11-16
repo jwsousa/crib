@@ -20,7 +20,6 @@ block content
     script
       //- makeHandDivsMap();
 
-      resetAllUnflipped();
       var socket = io.connect();
 
       socket.on('message', function(message){
@@ -36,4 +35,8 @@ block content
       socket.on('need crib', function() {
         console.log('!!!!need a crib');
         makeCribSelectable();
+      });
+
+      socket.on('set unflipped', function(data) {
+        setUnflipped(data['section'], data['number']);
       });

@@ -94,16 +94,11 @@ function makeUnflippedCard(index){
   return card;
 }
 
-function resetAllUnflipped(){
-  $('.cards').html('')
-
-  $('.flip .cards').append(makeUnflippedCard(0));
-
-  for(var i=0;i<6;i++)
-    $('.otherhand .cards').append(makeUnflippedCard(i));
-
-  for(var i=0;i<6;i++)
-    $('.hand .cards').append(makeUnflippedCard(i));
+function setUnflipped(hand, number){
+  var cardsDiv = $('.' + hand + ' .cards');
+  cardsDiv.html('');
+  for(var i=0;i<number;i++)
+    cardsDiv.append(makeUnflippedCard(i));
 }
 
 

@@ -10,17 +10,20 @@ exports.Game = function(io){
   this.cards = exports.makeCardSets(this.deck);
   this.sockets = {};
   this.playersById = {};
+  this.oponent = {'player': 'dealer', 'dealer': 'player'};
 
   this.setDealer = function(socket){
     this.sockets['dealer'] = socket;
     this.playersById[socket.id] = 'dealer';
     this.playerCount++;
+    this.setAllUnflipped('dealer');
     socket.send('You are the dealer. Please wait for a second player and the cards will be dealt.')
   }
   this.setPlayer = function(socket){
     this.sockets['player'] = socket;
     this.playersById[socket.id] = 'player';
     this.playerCount++;
+    this.setAllUnflipped('player');
   }
   this.addClient = function(socket){
     if(this.playerCount==0){
@@ -48,6 +51,7 @@ exports.Game = function(io){
     crib.push(hand.splice(cardIndices[0], 1)[0]);
     crib.push(hand.splice(cardIndices[1], 1)[0]);
     this.pushHand(playerName);
+    this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
   }
   this.pushHand = function(playerName){
     this.sockets[playerName].emit('set cards',
@@ -60,6 +64,11 @@ exports.Game = function(io){
       game.addCrib(playerName, data['crib']);
     });
     this.sockets[playerName].emit('need crib');
+  }
+  this.setAllUnflipped = function(playerName){
+    this.sockets[playerName].emit('set unflipped', {'section': 'flip', 'number': 1});
+    this.sockets[playerName].emit('set unflipped', {'section': 'hand', 'number': 6});
+    this.sockets[playerName].emit('set unflipped', {'section': 'otherhand', 'number': 6});
   }
 }
 
