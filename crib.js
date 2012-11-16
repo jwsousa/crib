@@ -84,7 +84,7 @@ exports.Game = function(io){
     this.sockets[oponent].emit('set card', {'section':
                                             'otherhand', 'index': cardIndex,
                                             'card': this.cards[playerName][cardIndex]});
-    this,setPlayCount(this.playCount + card['score']);
+    this.setPlayCount(this.playCount + card['score']);
     this.requestNextCard();
   }
   this.requestNextCard = function(){
