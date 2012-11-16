@@ -124,7 +124,7 @@ exports.cardFromDeckIndex = function(index){
   }if (score == 1){
     face = 'A'
   }
-  return {'suit': suit, 'face': face};
+  return {'suit': suit, 'face': face, 'score': score};
 }
 
 
