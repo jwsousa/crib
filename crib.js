@@ -66,7 +66,7 @@ exports.Game = function(io){
     this.requestCard('player');
   }
   this.sendPlayCount = function(){
-    this.io.sockets.in(this.name).emit('set count', this.playCount);
+    this.io.sockets.in(this.name).emit('set count', {'count': this.playCount});
   }
   this.cardPlayed = function(playerName, cardIndex){
     var card = this.cards[playerName][cardIndex];

@@ -54,6 +54,6 @@ block content
         setDisabled(data['section'], data['index']);
       });
 
-      socket.on('set count', function(count) {
-        setCount();
+      socket.on('set count', function(data) {
+        setCount(data['count']);
       });
