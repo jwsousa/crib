@@ -4,13 +4,17 @@ block content
   h1#header Cribbage by CS productions
   h2.message Welcome
   .game
-    .otherhand
+    #otherhand.section
       h3 Other Player's Hand:
       .cards
-    .center
-      .flip
+    #flipcrib.section
+      #flip
+        .cards
+      #crib
+        .cards
+    #play.section
       .cards
-    .hand
+    #hand.section
       h3 My Hand:
       .cards
   b.message
@@ -29,8 +33,7 @@ block content
 
       socket.on('set cards', function(data) {
         var cards = data['cards'];
-        var div = $('.'+data['hand']);
-        setCardsOnPage(div, cards);
+        setCardsOnPage(data['section'], cards);
       });
 
       socket.on('need cards', function(data) {

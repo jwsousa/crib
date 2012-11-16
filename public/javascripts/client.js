@@ -69,18 +69,18 @@ function Card(data){
   }
 }
 
-function setCardsOnPage(div, hand){
-  div = $('.cards', div);
-  div.html('');
-  for (var i=0;i<hand.length;i++){
-    var card = new Card(hand[i]);
+function setCardsOnPage(section, cards){
+  var cardsDiv = $('#' + section + ' .cards');
+  cardsDiv.html('');
+  for (var i=0;i<cards.length;i++){
+    var card = new Card(cards[i]);
     var cardDiv = $('<div/>');
     cardDiv.attr("id",'card'+i);
     cardDiv.addClass('card');
     cardDiv.html(card.htmlCode());
     cardDiv.addClass(card.suit);
     cardDiv.addClass('flipped');
-    div.append(cardDiv);
+    cardsDiv.append(cardDiv);
   }
 }
 
@@ -94,8 +94,8 @@ function makeUnflippedCard(index){
   return card;
 }
 
-function setUnflipped(hand, number){
-  var cardsDiv = $('.' + hand + ' .cards');
+function setUnflipped(section, number){
+  var cardsDiv = $('#' + section + ' .cards');
   cardsDiv.html('');
   for(var i=0;i<number;i++)
     cardsDiv.append(makeUnflippedCard(i));
