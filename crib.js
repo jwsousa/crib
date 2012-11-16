@@ -1,5 +1,39 @@
 "use strict";
 
+var game_counter = 0;
+
+exports.Game = function(){
+  this.name = 'crib' + game_counter++;
+  this.player_count = 0;
+  this.deck = exports.makeDeck();
+  this.hands = exports.makeHands(this.deck);
+  this.dealer_socket = null;
+  this.player_socket = null;
+
+  this.setDealer = function(socket){
+    this.dealer_socket = socket;
+    this.player_count++;
+  }
+  this.setPlayer = function(socket){
+    this.player_socket = socket;
+    this.player_count++;
+  }
+  this.addClient = function(socket){
+    if(this.player_count==0){
+      this.setDealer(socket);
+    }else if(this.player_count==1){
+      this.setPlayer(socket);
+    }
+    if(this.player_count==2){
+      this.startGame();
+    }
+  }
+  this.startGame = function(){
+    this.dealer_socket.emit('hand', {'index': 2, 'hand': this.hands['dealer']});
+    this.player_socket.emit('hand', {'index': 2, 'hand': this.hands['player']});
+  }
+}
+
 exports.cardFromDeckIndex = function(index){
   var suit = null;
   if (index%4 === 0){
@@ -63,7 +97,11 @@ exports.shuffleDeck = function(deck) {
 }
 
 exports.makeHands = function(deck) {
-  return [deck.slice(0,1), deck.slice(1,7), deck.slice(7,13)]
+  return {
+    'flip': deck.slice(0,1),
+    'dealer': deck.slice(1,7),
+    'player': deck.slice(7,13)
+  };
 }
 
 

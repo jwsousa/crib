@@ -36,12 +36,17 @@ server.listen(app.get('port'), function(){
 });
 
 var crib = require('./crib');
-var deck = crib.makeDeck();
-var hands = crib.makeHands(deck);
-console.log(hands);
+
+var game = new crib.Game();
+
+console.log(game);
 var io = require('socket.io').listen(server)
 
 io.sockets.on('connection', function (socket) {
+  game.addClient(socket);
+  socket.join(game.name);
+  console.log(game);
+  console.log(socket.manager.rooms);
   socket.on('get deck', function () {
     socket.emit('deck', {'deck': deck});
   });
