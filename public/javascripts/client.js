@@ -102,7 +102,8 @@ function setUnflipped(section, number){
 }
 
 function setDisabled(section, index){
-  var cardDiv = $('#' + section + ' .cards .card' + index);
+  var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  console.debug(cardDiv);
   cardDiv.addClass('disabled');
 }
 
@@ -117,7 +118,7 @@ function setCount(count){
 
 function selectCards(number){
 
-  $('#hand .card').click(function() {
+  $('#hand .card:not(.disabled)').click(function() {
     $(this).toggleClass('selected');
     var selectedCardsInHand = $('#hand .card.selected');
     if(selectedCardsInHand.length == number){

@@ -35,25 +35,32 @@ block content
       });
 
       socket.on('set cards', function(data) {
-        console.debug('set cards received: ' + data);
+        console.debug('set cards received:');
+        console.debug(data);
         var cards = data['cards'];
         setCardsOnPage(data['section'], cards);
       });
 
       socket.on('need cards', function(data) {
-        console.debug('need cards received: ' + data);
+        console.debug('need cards received:');
+        console.debug(data);
         selectCards(data['number']);
       });
 
       socket.on('set unflipped', function(data) {
-        console.debug('set unflipped received: ' + data);
+        console.debug('set unflipped received:');
+        console.debug(data);
         setUnflipped(data['section'], data['number']);
       });
 
       socket.on('set disabled', function(data) {
+        console.debug('set disabled received:');
+        console.debug(data);
         setDisabled(data['section'], data['index']);
       });
 
       socket.on('set count', function(data) {
+        console.debug('set count received:');
+        console.debug(data);
         setCount(data['count']);
       });
