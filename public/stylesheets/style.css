@@ -59,5 +59,11 @@
 }
 #flip {
   display: inline-block;
-  crib: inline-block;
+}
+#crib {
+  display: inline-block;
+}
+.dissabled {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
