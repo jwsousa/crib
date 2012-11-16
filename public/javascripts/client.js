@@ -101,23 +101,19 @@ function setUnflipped(section, number){
     cardsDiv.append(makeUnflippedCard(i));
 }
 
-
-function sendCards(number){
-  var selectedCardsInHand = $('.hand .card.selected');
-  if(selectedCardsInHand.length == number){
-    selectedCardsInHand.removeClass('selected');
-    var cards = [];
-    selectedCardsInHand.each(function(){
-      cards.push($(this).attr('id'));
-    });
-    $('.card').unbind('click');
-    socket.emit('cards selected', {'cards': cards});
-  }
-}
-
 function selectCards(number){
+
   $('.hand .card').click(function() {
     $(this).toggleClass('selected');
-    sendCards(number);
+    var selectedCardsInHand = $('.hand .card.selected');
+    if(selectedCardsInHand.length == number){
+      selectedCardsInHand.removeClass('selected');
+      var cards = [];
+      selectedCardsInHand.each(function(){
+        cards.push($(this).attr('id'));
+      });
+      $('.card').unbind('click');
+      socket.emit('cards selected', {'cards': cards});
+    }
   });
 }
