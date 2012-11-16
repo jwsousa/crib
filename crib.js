@@ -60,7 +60,7 @@ exports.Game = function(io){
   }
   this.pushHand = function(playerName){
     this.sockets[playerName].emit('set cards',
-      {'hand': 'hand',
+      {'section': 'hand',
        'cards': this.cards[playerName]});
   }
   this.requestCrib = function(playerName){
@@ -77,10 +77,10 @@ exports.Game = function(io){
   }
   this.showFlip = function(){
     this.sockets['dealer'].emit('set cards',
-      {'hand': 'flip',
+      {'section': 'flip',
        'cards': this.cards['flip']});
     this.sockets['player'].emit('set cards',
-      {'hand': 'flip',
+      {'section': 'flip',
        'cards': this.cards['flip']});
   }
   this.requestCard = function(playerName){
