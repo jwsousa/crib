@@ -56,6 +56,7 @@ exports.Game = function(io){
 
     if (crib.length == 4){
       this.showFlip();
+      this.setCribUnflipped()
     }
   }
   this.pushHand = function(playerName){
@@ -74,6 +75,10 @@ exports.Game = function(io){
     this.sockets[playerName].emit('set unflipped', {'section': 'flip', 'number': 1});
     this.sockets[playerName].emit('set unflipped', {'section': 'hand', 'number': 6});
     this.sockets[playerName].emit('set unflipped', {'section': 'otherhand', 'number': 6});
+  }
+  this.setCribUnflipped = function(){
+    this.sockets['dealer'].emit('set unflipped', {'section': 'crib', 'number': 4});
+    this.sockets['player'].emit('set unflipped', {'section': 'crib', 'number': 4});
   }
   this.showFlip = function(){
     this.sockets['dealer'].emit('set cards',
