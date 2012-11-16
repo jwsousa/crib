@@ -62,8 +62,8 @@ exports.Game = function(io){
   this.startPlay = function(){
     this.playCount = 0;
     this.sendPlayCount();
-    this.nextPlayer = 'player';
-    this.requestCard('dealer');
+    this.nextPlayer = 'dealer';
+    this.requestCard('player');
   }
   this.sendPlayCount = function(){
     this.io.sockets.in(this.name).emit('set count', this.playCount);
@@ -77,7 +77,7 @@ exports.Game = function(io){
     this.sockets[playerName].emit('set disabled', {'section': 'hand', 'index': cardIndex});
     this.sockets[this.oponent[playerName]].emit('set disabled', {'section': 'otherhand', 'number': cardIndex});
 
-    this.playCount += card[score];
+    this.playCount += card['score'];
     this.sendPlayCount();
     this.requestCard(this.nextPlayer);
   }
