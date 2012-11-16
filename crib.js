@@ -203,9 +203,13 @@ exports.Game = function(io){
     this.active = false;
     this.sockets['dealer'].removeAllListeners();
     this.sockets['dealer'].disconnect();
+    this.sockets['dealer'].leave(this.name);
+    this.sockets['dealer'] = null;
     if(this.sockets['player']){
       this.sockets['player'].removeAllListeners();
       this.sockets['player'].disconnect();
+      this.sockets['player'].leave(this.name);
+      this.sockets['player'] = null;
     }
   }
 
