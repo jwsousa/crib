@@ -161,7 +161,8 @@ function initSocket(__bool){
     socket.on('disconnect', function (){console.log('disconnected')});
   } else {
     socket.removeAllListeners();
-    socket.socket.reconnect();
+    socket.disconnect()
+    socket.socket.connect();
   }
 }
 
