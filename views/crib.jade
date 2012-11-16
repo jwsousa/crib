@@ -6,8 +6,8 @@ block content
     .flip
       .cards
         .card.card0
-    .hand1
-      h3 Hand #1:
+    .otherhand
+      h3 Other Player's Hand:
       .cards
         .card.card0
         .card.card1
@@ -15,8 +15,8 @@ block content
         .card.card3
         .card.card4
         .card.card5
-    .hand2
-      h3 Hand #2:
+    .hand
+      h3 My Hand:
       .cards
         .card.card0
         .card.card1
@@ -25,13 +25,13 @@ block content
         .card.card4
         .card.card5
 
-    a#hand1.button(onClick='showHand(1);') Show Hand1
-    a#hand1.button(onClick='showHand(2);') Show Hand2
+    //- a#hand1.button(onClick='showHand(1);') Show Hand1
+    //- a#hand1.button(onClick='showHand(2);') Show Hand2
     //- a#cut.button(onClick='showHand(0);') Cut
     script
-      makeHandDivsMap();
+      //- makeHandDivsMap();
 
-      setAllUnflipped();
+      resetAllUnflipped();
       var socket = io.connect();
       var hand_index;
       var hand;

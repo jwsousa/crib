@@ -1,10 +1,5 @@
 "use strict";
 
-var hand_divs;
-function makeHandDivsMap(){
-  hand_divs = {0:$('.flip'), 1:$('.hand1'), 2:$('.hand2')};
-}
-
 function Card(data){
   this.suit = data['suit'];
   this.face = data['face'];
@@ -106,8 +101,23 @@ function printHand(hand){
   conosole.log()
 }
 
-function setAllUnflipped(){
-   $('.card').html('&#x1f0a0;').addClass('unflipped');
+function makeUnflippedCard(index){
+  var card = $('<div/>');
+  card.addClass('card');
+  card.addClass('unflipped');
+  card.html('&#x1f0a0;');
+  return card;
+}
+function resetAllUnflipped(){
+  $('.cards').html('')
+
+  $('.flip .cards').append(makeUnflippedCard(0));
+
+  for(var i=0;i<6;i++)
+    $('.otherhand .cards').append(makeUnflippedCard(i));
+
+  for(var i=0;i<6;i++)
+    $('.hand .cards').append(makeUnflippedCard(i));
 }
 
 function showHand(index){
