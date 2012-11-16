@@ -96,13 +96,12 @@ exports.Game = function(io){
       return;
     }
     if(this.canPlay(otherPlayer)) {
-      this.requestCard(otherPlayer);
-      this.nextPlayer = nextPlayer;
+      this.nextPlayer = otherPlayer;
+      this.requestNextCard();
       return;
     }
     this.playCount = 0;
-    this.requestCard(this.nextPlayer);
-    this.nextPlayer = otherPlayer;
+    this.requestNextCard();
   }
   this.canPlay = function(playerName){
     for(var i=0;i<this.cards[playerName].length;i++){
