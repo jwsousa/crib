@@ -55,6 +55,7 @@ exports.Game = function(io){
        'cards': this.cards[playerName]});
   }
   this.requestCrib = function(playerName){
+    var game = this;
     this.sockets[playerName].once('crib selected', function (data) {
       game.addCrib(playerName, data['crib']);
     });
