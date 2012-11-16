@@ -52,6 +52,10 @@ exports.Game = function(io){
     crib.push(hand.splice(cardIndices[1], 1)[0]);
     this.pushHand(playerName);
     this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
+
+    if (crib.length == 4){
+      this.showFlip();
+    }
   }
   this.pushHand = function(playerName){
     this.sockets[playerName].emit('set cards',
@@ -69,6 +73,14 @@ exports.Game = function(io){
     this.sockets[playerName].emit('set unflipped', {'section': 'flip', 'number': 1});
     this.sockets[playerName].emit('set unflipped', {'section': 'hand', 'number': 6});
     this.sockets[playerName].emit('set unflipped', {'section': 'otherhand', 'number': 6});
+  }
+  this.showFlip = function(){
+    this.sockets['dealer'].emit('set cards',
+      {'hand': 'flip',
+       'cards': this.cards['flip']});
+    this.sockets['player'].emit('set cards',
+      {'hand': 'flip',
+       'cards': this.cards['flip']});
   }
 }
 
