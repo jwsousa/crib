@@ -39,6 +39,7 @@ exports.Game = function(io){
     this.io.sockets.in(this.name).emit('set cards',
       {'section': 'crib',
        'cards': []});
+    this.sendToRoom('');
 
    this.pushHand('player');
    this.pushHand('dealer');
