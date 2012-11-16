@@ -8,6 +8,9 @@
   text-align: center;
   font-family: Symbola, Quivira;
 }
+.card:hover {
+  border-color:black;
+}
 .cards {
   margin: 10px 15px 30px 15px;
   /*height: 60px;*/
@@ -64,6 +67,6 @@
   display: inline-block;
 }
 .disabled {
-  opacity: 0.4;
-  filter: alpha(opacity=40);
+  opacity: 0.2;
+  filter: alpha(opacity=20);
 }
