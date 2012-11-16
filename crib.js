@@ -7,7 +7,7 @@ exports.Game = function(io){
   this.name = 'crib' + gameCount++;
   this.playerCount = 0;
   this.deck = exports.makeDeck();
-  this.cards = exports.makeCardsSets(this.deck);
+  this.cards = exports.makeCardSets(this.deck);
   this.sockets = {};
   this.playersById = {};
 
