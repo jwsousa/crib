@@ -56,7 +56,9 @@ function Card(data){
       code += 'D';
     } else if (this.face=='K'){
       code += 'E';
-    }else{
+    } else if (this.face=='A'){
+      code += '1';
+    } else{
       code += this.face;
     }
     code += ';';
