@@ -22,16 +22,18 @@ block content
 
       resetAllUnflipped();
       var socket = io.connect();
-      var hand_index;
-      var hand;
 
       socket.on('message', function(message){
         $('.message').html(message);
       });
 
-      socket.on('hand', function (data) {
-        hand = data['hand'];
-        hand_index = data['index'];
-        setCardsOnPage();
+      socket.on('set cards', function (data) {
+        var cards = data['cards'];
+        var div = $('.'+data['hand']);
+        setCardsOnPage(div, cards);
+      });
+
+      socket.on('need crib', function() {
+        console.log('!!!!need a crib');
         makeCribSelectable();
       });

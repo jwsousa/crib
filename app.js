@@ -37,16 +37,14 @@ server.listen(app.get('port'), function(){
 
 var crib = require('./crib');
 
-var game = new crib.Game();
 
-console.log(game);
+
 var io = require('socket.io').listen(server)
+var game = new crib.Game(io);
 
 io.sockets.on('connection', function (socket) {
   game.addClient(socket);
   socket.join(game.name);
-  console.log(game);
-  console.log(socket.manager.rooms);
   socket.on('get deck', function () {
     socket.emit('deck', {'deck': deck});
   });
@@ -57,6 +55,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('crib selected', function (data) {
-    console.log(data)
+    console.log('crib selected!!');
+    console.log(data);
   });
 });

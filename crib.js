@@ -2,11 +2,12 @@
 
 var game_counter = 0;
 
-exports.Game = function(){
+exports.Game = function(io){
+  this.io = io;
   this.name = 'crib' + game_counter++;
   this.player_count = 0;
   this.deck = exports.makeDeck();
-  this.hands = exports.makeHands(this.deck);
+  this.cards = exports.makeHands(this.deck);
   this.dealer_socket = null;
   this.player_socket = null;
 
@@ -30,8 +31,15 @@ exports.Game = function(){
     }
   }
   this.startGame = function(){
-    this.dealer_socket.emit('hand', {'index': 2, 'hand': this.hands['dealer']});
-    this.player_socket.emit('hand', {'index': 2, 'hand': this.hands['player']});
+    this.dealer_socket.emit('set cards',
+      {'hand': 'hand',
+       'cards': this.cards['dealer']});
+    this.player_socket.emit('set cards',
+      {'hand': 'hand',
+       'cards': this.cards['player']});
+    // this.io.sockets.in(this.name).emit('need crib');
+    this.dealer_socket.emit('need crib');
+    this.player_socket.emit('need crib');
   }
 }
 
