@@ -1,10 +1,25 @@
 "use strict";
 
-var gameCount = 0;
+var games = [];
+
+exports.gameForNewConnection = function(io, socket){
+  for(var gameIndex=0;gameIndex<games.length;gameIndex++){
+    var game = games[gameIndex];
+    if(game.active && game.playerCount < 2){
+      game.addClient(socket);
+      return game;
+    }
+  }
+  var newGame = new exports.Game(io);
+  games.push(newGame);
+  newGame.addClient(socket);
+  return newGame;
+}
 
 exports.Game = function(io){
+  this.active = true;
   this.io = io;
-  this.name = 'crib' + gameCount++;
+  this.name = 'crib' + games.length;
   this.playerCount = 0;
   this.deck = exports.makeDeck();
   this.cards = exports.makeCardSets(this.deck);
@@ -26,30 +41,32 @@ exports.Game = function(io){
     this.playerCount++;
     this.setAllUnflipped('player');
     socket.send('You are NOT the dealer.');
+    this.sockets['dealer'].send('You are the dealer.');
   }
   this.addClient = function(socket){
     if(this.playerCount==0){
       this.setDealer(socket);
     }else if(this.playerCount==1){
       this.setPlayer(socket);
+    }else{
+      console.log('Already 2 people in this game!');
+      return;
     }
+    socket.join(this.name);
+    socket.emit('set cards',{'section': 'crib', 'cards': []});
+    socket.emit('set count',{'count': -1});
+
     if(this.playerCount==2){
       this.startGame();
     }
   }
   this.startGame = function(){
-    this.io.sockets.in(this.name).emit('set cards',
-      {'section': 'crib',
-       'cards': []});
-
-
-   this.pushHand('player');
-   this.pushHand('dealer');
+    this.pushHand('player');
+    this.pushHand('dealer');
     // this.io.sockets.in(this.name).emit('need crib');
 
-   this.requestCrib('player');
-   this.requestCrib('dealer');
-
+    this.requestCrib('player');
+    this.requestCrib('dealer');
   }
   this.addCrib = function(playerName, cardIndices){
     var crib = this.cards['crib'];
@@ -58,6 +75,7 @@ exports.Game = function(io){
     crib.push(hand.splice(cardIndices[1]-1, 1)[0]);
     this.pushHand(playerName);
     this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
+    this.io.sockets.in(this.name).emit('set unflipped', {'section': 'crib', 'number': crib.length});
 
     if (crib.length == 4){
       this.cribComplete();
@@ -181,7 +199,15 @@ exports.Game = function(io){
       game.cardPlayed(playerName, cards[0]);
     });
   }
-
+  this.endGame = function(){
+    this.active = false;
+    this.sockets['dealer'].removeAllListeners();
+    this.sockets['dealer'].disconnect();
+    if(this.sockets['player']){
+      this.sockets['player'].removeAllListeners();
+      this.sockets['player'].disconnect();
+    }
+  }
 
 }
 
@@ -216,13 +242,13 @@ exports.cardFromDeckIndex = function(index){
 }
 
 
-exports.printDeck = function(deck){
-  console.log('Deck:');
-  for (var i=0;i<52;i++){
-    deck[i].print();
-  }
-  console.log('\n\n');
-}
+// exports.printDeck = function(deck){
+//   console.log('Deck:');
+//   for (var i=0;i<52;i++){
+//     deck[i].print();
+//   }
+//   console.log('\n\n');
+// }
 
 exports.makeDeck = function(){
   var deck = []

@@ -142,3 +142,96 @@ function selectCards(number){
     }
   });
 }
+
+function gameDisconnected(){
+  $('.cards').html('');
+  $('.message').html('Game has been disconnected, try again.');
+}
+
+var socket = null;
+
+function initSocket(__bool){
+  if(__bool == true){
+    if ( !socket ) {
+      socket = io.connect();//{secure:false}
+      socket.on('connect', function(){console.log('connected')});
+      socket.on('disconnect', function (){console.log('disconnected')});
+    } else {
+      socket.socket.connect(); // Yep, socket.socket ( 2 times )
+    }
+  }else{
+    socket.disconnect();
+    // socket = null; // We don't need this anymore
+  }
+}
+
+function startNewGame(){
+  console.log('Starting new game.');
+  // if(socket && socket.socket.connected){
+  //   console.log('Old socket exists. Reconnecting.');
+  //   socket.socket.disconnect();
+  //   socket.socket.connect()
+  // }else{
+  //   socket = io.connect();
+  // }
+
+  initSocket(true);
+
+
+  console.debug(socket);
+
+  socket.on('message', function(message){
+    console.debug('message received: ' + message);
+    $('.message').html(message);
+  });
+
+  socket.on('set cards', function(data) {
+    console.debug('set cards received:');
+    console.debug(data);
+    var cards = data['cards'];
+    setCardsOnPage(data['section'], cards);
+  });
+
+  socket.on('set card', function(data) {
+    console.debug('set card received:');
+    console.debug(data);
+    var section = data['section'];
+    var index = data['index'];
+    var card = data['card'];
+    setCard(section, index, card);
+  });
+
+  socket.on('need cards', function(data) {
+    console.debug('need cards received:');
+    console.debug(data);
+    selectCards(data['number']);
+  });
+
+  socket.on('set unflipped', function(data) {
+    console.debug('set unflipped received:');
+    console.debug(data);
+    setUnflipped(data['section'], data['number']);
+  });
+
+  socket.on('set disabled', function(data) {
+    console.debug('set disabled received:');
+    console.debug(data);
+    setDisabled(data['section'], data['index']);
+  });
+
+  socket.on('set count', function(data) {
+    console.debug('set count received:');
+    console.debug(data);
+    setCount(data['count']);
+  });
+
+  socket.on('enable all', function() {
+    console.debug('enable all received:');
+    $('.disabled').removeClass('disabled');
+  });
+
+  socket.on('disconnect', function(){
+    console.log('disconnected!');
+    gameDisconnected();
+  });
+}

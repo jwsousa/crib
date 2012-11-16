@@ -27,8 +27,7 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
-app.get('/crib', crib.index);
+app.get('/', crib.index);
 
 var server = require('http').createServer(app);
 server.listen(app.get('port'), function(){
@@ -36,15 +35,15 @@ server.listen(app.get('port'), function(){
 });
 
 var crib = require('./crib');
-
-
-
 var io = require('socket.io').listen(server)
-var game = new crib.Game(io);
+io.set('log level', 1);
 
 io.sockets.on('connection', function (socket) {
-  game.addClient(socket);
-  socket.join(game.name);
+  console.log('New connection from: ' + socket.id);
+  // io.sockets.manager.roomClients[socket.id]
+  var game = crib.gameForNewConnection(io, socket);
 
-
+  socket.on('disconnect', function () {
+    game.endGame();
+  });
 });
