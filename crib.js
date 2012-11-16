@@ -184,7 +184,7 @@ exports.Game = function(io){
     });
     return callback(cardIndices);
     });
-    this.sockets[playerName].emit('need cards', {'number': number});
+    this.sockets[playerName].emit('need cards', {'game': this.name, 'number': number});
   }
   this.requestCrib = function(playerName){
     var game = this;
