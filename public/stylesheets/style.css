@@ -63,7 +63,7 @@
 #crib {
   display: inline-block;
 }
-.dissabled {
+.disabled {
   opacity: 0.4;
   filter: alpha(opacity=40);
 }
