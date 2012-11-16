@@ -39,7 +39,7 @@ exports.Game = function(io){
    this.requestCrib('player');
    this.requestCrib('dealer');
   }
-  this.addCrib = fuction(playerName, cardIds){
+  this.addCrib = function(playerName, cardIds){
     var cardIndices = cardIds.map(function(cardId){
       return parseInt(cardId[5]);
     });
