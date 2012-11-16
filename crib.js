@@ -62,6 +62,7 @@ exports.Game = function(io){
   this.startPlay = function(){
     this.playCount = 0;
     this.sendPlayCount();
+    this.playedCards = {'dealer':[], 'player':[]}
     this.nextPlayer = 'dealer';
     this.requestCard('player');
   }
@@ -74,6 +75,7 @@ exports.Game = function(io){
       this.requestCard(playerName);
       return;
     }
+    this.playedCards[playerName].push(card);
     var oponent = this.oponent[playerName];
     this.sockets[playerName].emit('set disabled', {'section': 'hand',
                                                    'index': cardIndex});
@@ -82,12 +84,36 @@ exports.Game = function(io){
     this.sockets[oponent].emit('set card', {'section':
                                             'otherhand', 'index': cardIndex,
                                             'card': this.cards[playerName][cardIndex]});
-
     this.playCount += card['score'];
     this.sendPlayCount();
-    this.sendToRoom('Requesting card from ' + this.nextPlayer)
+    this.requestNextCard();
+  }
+  this.requestNextCard = function(){
+    otherPlayer = this.oponent[this.nextPlayer];
+    if(this.canPlay(this.nextPlayer)) {
+      this.requestCard(this.nextPlayer);
+      this.nextPlayer = otherPlayer;
+      return;
+    }
+    if(this.canPlay(otherPlayer)) {
+      this.requestCard(otherPlayer);
+      this.nextPlayer = nextPlayer;
+      return;
+    }
+    this.playCount = 0;
     this.requestCard(this.nextPlayer);
-    this.nextPlayer = playerName;
+    this.nextPlayer = otherPlayer;
+  }
+  this.canPlay = function(playerName){
+    for(var i=0;i<this.cards[playerName].length;i++){
+      var card = this.cards[playerName];
+      if(!this.playedCards[playerName].contains(card)){
+        if(card.score + this.playCount <= 31){
+          return true;
+        }
+      }
+    }
+    return false;
   }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);
@@ -115,6 +141,7 @@ exports.Game = function(io){
        'cards': this.cards['flip']});
   }
   this.requestCards = function(playerName, number, callback){
+    this.sendToRoom('Requesting ' + number + ' card(s) from ' + this.playerName)
     var game = this;
     this.sockets[playerName].once('cards selected', function(data){
     var cardIndices = data['cards'].map(function(cardId){
