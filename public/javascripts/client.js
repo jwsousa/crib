@@ -126,6 +126,7 @@ function setCount(count){
 }
 
 function selectCards(number){
+  $('.card').unbind('click').removeClass('selectable');
   var selectableCards = $('#hand .card:not(.disabled)');
   console.log('select card:');
   console.debug(selectableCards);
