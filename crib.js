@@ -105,7 +105,7 @@ exports.Game = function(io){
   }
   this.canPlay = function(playerName){
     for(var i=0;i<this.cards[playerName].length;i++){
-      var card = this.cards[playerName];
+      var card = this.cards[playerName][i];
       if(this.playedCards[playerName].indexOf(card) == -1){
         if(card.score + this.playCount <= 31){
           return true;
