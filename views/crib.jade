@@ -51,9 +51,11 @@ block content
       });
 
       socket.on('set disabled', function(data) {
+        console.debug('set disabled received: ' + data);
         setDisabled(data['section'], data['index']);
       });
 
       socket.on('set count', function(data) {
+        console.debug('set count received: ' + data);
         setCount(data['count']);
       });
