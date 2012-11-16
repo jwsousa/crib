@@ -103,9 +103,9 @@ function setUnflipped(section, number){
 
 function selectCards(number){
 
-  $('.hand .card').click(function() {
+  $('#hand .card').click(function() {
     $(this).toggleClass('selected');
-    var selectedCardsInHand = $('.hand .card.selected');
+    var selectedCardsInHand = $('#hand .card.selected');
     if(selectedCardsInHand.length == number){
       selectedCardsInHand.removeClass('selected');
       var cards = [];
