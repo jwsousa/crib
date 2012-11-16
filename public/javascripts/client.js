@@ -127,8 +127,11 @@ function setCount(count){
 
 function selectCards(number){
   var selectableCards = $('#hand .card:not(.disabled)');
+  console.log('select card:');
+  console.debug(selectableCards);
   selectableCards.addClass('selectable');
   selectableCards.click(function() {
+    console.log('selectable card clicked');
     $(this).toggleClass('selected');
     var selectedCardsInHand = $('#hand .card.selected');
     if(selectedCardsInHand.length == number){
