@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1#header Cards are Great
+  h1#header Cribbage by CS productions
+  h2.message Welcome
   .game
     .flip
       .cards
@@ -11,6 +12,7 @@ block content
     .hand
       h3 My Hand:
       .cards
+  b.message
 
     //- a#hand1.button(onClick='showHand(1);') Show Hand1
     //- a#hand1.button(onClick='showHand(2);') Show Hand2
@@ -24,7 +26,7 @@ block content
       var hand;
 
       socket.on('message', function(message){
-        //too html here alert(message);
+        $('.message').html(message);
       });
 
       socket.on('hand', function (data) {
