@@ -89,7 +89,7 @@ exports.Game = function(io){
     this.requestNextCard();
   }
   this.requestNextCard = function(){
-    otherPlayer = this.oponent[this.nextPlayer];
+    var otherPlayer = this.oponent[this.nextPlayer];
     if(this.canPlay(this.nextPlayer)) {
       this.requestCard(this.nextPlayer);
       this.nextPlayer = otherPlayer;
@@ -140,7 +140,7 @@ exports.Game = function(io){
        'cards': this.cards['flip']});
   }
   this.requestCards = function(playerName, number, callback){
-    this.sendToRoom('Requesting ' + number + ' card(s) from ' + this.playerName)
+    this.sendToRoom('Requesting ' + number + ' card(s) from ' + playerName)
     var game = this;
     this.sockets[playerName].once('cards selected', function(data){
     var cardIndices = data['cards'].map(function(cardId){
