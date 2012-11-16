@@ -36,6 +36,10 @@ block content
       var hand_index;
       var hand;
 
+      socket.on('message', function(message){
+        alert(message);
+      });
+
       socket.on('hand', function (data) {
         hand = data['hand'];
         hand_index = data['index'];

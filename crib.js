@@ -13,6 +13,7 @@ exports.Game = function(){
   this.setDealer = function(socket){
     this.dealer_socket = socket;
     this.player_count++;
+    socket.send('You are the dealer. Please wait for a second player and the cards will be dealt.')
   }
   this.setPlayer = function(socket){
     this.player_socket = socket;
