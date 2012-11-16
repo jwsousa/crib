@@ -25,7 +25,7 @@ exports.Game = function(io){
     this.playersById[socket.id] = 'player';
     this.playerCount++;
     this.setAllUnflipped('player');
-    this.sendToRoom('You are NOT the dealer.');
+    socket.send('You are NOT the dealer.');
   }
   this.addClient = function(socket){
     if(this.playerCount==0){
