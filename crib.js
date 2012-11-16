@@ -36,23 +36,29 @@ exports.Game = function(io){
    this.pushHand('player');
    this.pushHand('dealer');
     // this.io.sockets.in(this.name).emit('need crib');
-    this.dealerSocket.emit('need crib');
-    this.playerSocket.emit('need crib');
+   this.requestCrib('player');
+   this.requestCrib('dealer');
   }
-  this.addCrib = fuction(id, cardIds){
+  this.addCrib = fuction(playerName, cardIds){
     var cardIndices = cardIds.map(function(cardId){
       return parseInt(cardId[5]);
     });
     var crib = this.cards['crib'];
-    var player = this.playersById[id];
-    var hand = this.cards[player];
+    var hand = this.cards[playerName];
     crib.push(hand.splice(cardIndices[0], 1)[0]);
     crib.push(hand.splice(cardIndices[1], 1)[0]);
+    this.pushHand(playerName);
   }
-  this.pushHand = function(player){
-    this.sockets[player].emit('set cards',
+  this.pushHand = function(playerName){
+    this.sockets[playerName].emit('set cards',
       {'hand': 'hand',
-       'cards': this.cards[player]});
+       'cards': this.cards[playerName]});
+  }
+  this.requestCrib = fuction(playerName){
+    sockets[playerName].once('crib selected', function (data) {
+      game.addCrib(playerName, data['crib']);
+    });
+    this.sockets[playerName].emit('need crib');
   }
 }
 

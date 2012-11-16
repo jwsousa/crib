@@ -46,9 +46,5 @@ io.sockets.on('connection', function (socket) {
   game.addClient(socket);
   socket.join(game.name);
 
-  socket.on('crib selected', function (data) {
-    console.log('crib selected!!');
-    console.log(data);
-    game.addCrib(socket.id, data['crib']);
-  });
+
 });
