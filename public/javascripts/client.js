@@ -160,8 +160,8 @@ function initSocket(__bool){
     socket.on('connect', function(){console.log('connected')});
     socket.on('disconnect', function (){console.log('disconnected')});
   } else {
-    socket.disconnect();
-    socket.socket.connect(); // Yep, socket.socket ( 2 times )
+    socket.removeAllListeners();
+    socket.socket.reconnect();
   }
 }
 
