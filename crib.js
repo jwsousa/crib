@@ -43,14 +43,25 @@ exports.Game = function(io){
    this.requestCrib('dealer');
   }
   this.addCrib = function(playerName, cardIds){
+    console.log('!!!!!!');
+    console.log(playerName);
+    console.log(cardIds);
     var cardIndices = cardIds.map(function(cardId){
       return parseInt(cardId[5]);
     });
+    console.log(cardIndices);
     cardIndices.sort();
+    console.log(cardIndices);
     var crib = this.cards['crib'];
     var hand = this.cards[playerName];
+    console.log(crib);
+    console.log(hand);
     crib.push(hand.splice(cardIndices[0], 1)[0]);
+    console.log(crib);
+    console.log(hand);
     crib.push(hand.splice(cardIndices[1]-1, 1)[0]);
+    console.log(crib);
+    console.log(hand);
     this.pushHand(playerName);
     this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
 
