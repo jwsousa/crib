@@ -126,8 +126,9 @@ function setCount(count){
 }
 
 function selectCards(number){
-
-  $('#hand .card:not(.disabled)').click(function() {
+  var selectableCards = $('#hand .card:not(.disabled)');
+  selectableCards.addClass('selectable');
+  selectableCards.click(function() {
     $(this).toggleClass('selected');
     var selectedCardsInHand = $('#hand .card.selected');
     if(selectedCardsInHand.length == number){
@@ -136,7 +137,7 @@ function selectCards(number){
       selectedCardsInHand.each(function(){
         cards.push($(this).attr('id'));
       });
-      $('.card').unbind('click');
+      $('.card').unbind('click').removeClass('selectable');
       socket.emit('cards selected', {'cards': cards});
     }
   });
