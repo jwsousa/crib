@@ -23,7 +23,7 @@ block content
   b.message
   br
   a#newGame.button(onClick='startNewGame();') Start New Game
-  a#newHand.button(onClick='startNewHand();') Start New Hand
+  a#newHand.button.hidden(onClick='startNewHand();') Start New Hand
   script
     console.log('Start');
       //- makeHandDivsMap();
