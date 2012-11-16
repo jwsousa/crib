@@ -88,6 +88,10 @@ exports.Game = function(io){
     this.requestNextCard();
   }
   this.requestNextCard = function(){
+    if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
+      this.showAll();
+      return
+    }
     var otherPlayer = this.oponent[this.nextPlayer];
     if(this.canPlay(this.nextPlayer)) {
       this.requestCard(this.nextPlayer);
@@ -112,6 +116,12 @@ exports.Game = function(io){
       }
     }
     return false;
+  }
+  this.showAll = function(){
+    this.io.sockets.in(this.name).emit('set cards',
+      {'section': 'crib',
+       'cards': this.cards['crib']});
+    this.io.sockets.in(this.name).emit('enable all');
   }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);

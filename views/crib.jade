@@ -73,3 +73,8 @@ block content
         console.debug(data);
         setCount(data['count']);
       });
+
+      socket.on('enable all', function() {
+        console.debug('enable all received:');
+        $('.disabled').removeClass('disabled');
+      });
