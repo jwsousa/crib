@@ -3,15 +3,17 @@
 var games = [];
 
 exports.gameForNewConnection = function(io, socket){
+  console.log('New socket looking for a game: ' + socket.id);
   for(var gameIndex=0;gameIndex<games.length;gameIndex++){
     var game = games[gameIndex];
     if(game.active && game.playerCount < 2){
+      console.log('Found a game for ' + socket.id + ': ' + game.name);
       game.addClient(socket);
       return game;
     }
   }
   var newGame = new exports.Game(io);
-  games.push(newGame);
+  console.log('Making new game for ' + socket.id + ': ' + newGame.name);
   newGame.addClient(socket);
   return newGame;
 }
@@ -20,6 +22,7 @@ exports.Game = function(io){
   this.active = true;
   this.io = io;
   this.name = 'crib' + games.length;
+  games.push(this);
   this.playerCount = 0;
   this.deck = exports.makeDeck();
   this.cards = exports.makeCardSets(this.deck);
