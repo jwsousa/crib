@@ -26,15 +26,14 @@ block content
         $('.message').html(message);
       });
 
-      socket.on('set cards', function (data) {
+      socket.on('set cards', function(data) {
         var cards = data['cards'];
         var div = $('.'+data['hand']);
         setCardsOnPage(div, cards);
       });
 
-      socket.on('need crib', function() {
-        console.log('!!!!need a crib');
-        makeCribSelectable();
+      socket.on('need cards', function(data) {
+        selectCards(data['number']);
       });
 
       socket.on('set unflipped', function(data) {

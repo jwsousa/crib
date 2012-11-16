@@ -102,22 +102,22 @@ function setUnflipped(hand, number){
 }
 
 
-function sendCrib(){
+function sendCards(number){
   var selectedCardsInHand = $('.hand .card.selected');
-  if(selectedCardsInHand.length == 2){
+  if(selectedCardsInHand.length == number){
     selectedCardsInHand.removeClass('selected');
-    var crib = [];
+    var cards = [];
     selectedCardsInHand.each(function(){
-      crib.push($(this).attr('id'));
+      cards.push($(this).attr('id'));
     });
     $('.card').unbind('click');
-    socket.emit('crib selected', {'crib': crib});
+    socket.emit('cards selected', {'cards': cards});
   }
 }
 
-function makeCribSelectable(){
+function selectCards(number){
   $('.hand .card').click(function() {
     $(this).toggleClass('selected');
-    sendCrib();
+    sendCards(number);
   });
 }
