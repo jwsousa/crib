@@ -69,45 +69,31 @@ function Card(data){
   }
 }
 
-function setCardsOnPage(){
-  var hand_div = hand_divs[hand_index];
+function setCardsOnPage(div, hand){
+  div = $('.cards', div);
+  div.html('');
   for (var i=0;i<hand.length;i++){
     var card = new Card(hand[i]);
-    var card_div = $('.cards .card' + i, hand_div);
-    card_div.html(card.htmlCode());
-    card_div.addClass(card.suit);
-    card_div.addClass('flipped');
-    card_div.removeClass('unflipped');
+    var cardDiv = $('<div/>');
+    cardDiv.attr("id",'card'+i);
+    cardDiv.addClass('card');
+    cardDiv.html(card.htmlCode());
+    cardDiv.addClass(card.suit);
+    cardDiv.addClass('flipped');
+    div.append(cardDiv);
   }
 }
 
 
-function deal(){
-  setUflipped('flip', 1);
-
-  var hand1 = deck.slice(0,6);
-  var hand2 = deck.slice(6,12);
-
-  setCardsOnPage('hand1', hand1);
-  setCardsOnPage('hand2', hand2);
-}
-
-function cut(){
-  var flip = deck.slice(12,13);
-  setCardsOnPage('flip', flip);
-}
-
-function printHand(hand){
-  conosole.log()
-}
-
 function makeUnflippedCard(index){
   var card = $('<div/>');
+  card.attr("id",'card'+index);
   card.addClass('card');
   card.addClass('unflipped');
   card.html('&#x1f0a0;');
   return card;
 }
+
 function resetAllUnflipped(){
   $('.cards').html('')
 
@@ -120,42 +106,23 @@ function resetAllUnflipped(){
     $('.hand .cards').append(makeUnflippedCard(i));
 }
 
-function showHand(index){
-  socket.emit('get hand', index)
-}
 
-
-function sendCrib(hand_div){
-  var selectedCardsInHand = hand_div.find('.card.selected');
+function sendCrib(){
+  var selectedCardsInHand = $('.hand .card.selected');
   if(selectedCardsInHand.length == 2){
-    hand_div.find('.card').addClass('unselected').removeClass('selected');
+    selectedCardsInHand.removeClass('selected');
     var crib = [];
     selectedCardsInHand.each(function(){
-      for(var i=0;i<this.classList.length;i++){
-        var className = this.classList[i];
-        if(className.length==5 && className.indexOf('card')==0){
-          var card = hand[parseInt(className[4], 10)];
-          console.log(card);
-          crib.push(card);
-        }
-      }
+      crib.push($(this).attr('id'));
     });
-    selectedCardsInHand.remove();
     $('.card').unbind('click');
     socket.emit('crib selected', {'crib': crib});
   }
 }
 
 function makeCribSelectable(){
-  $('.card', hand_divs[hand_index]).click(function() {
-    if($(this).hasClass('unflipped')){
-      return;
-    }
-    if($(this).hasClass('selected')){
-      $(this).addClass('unselected').removeClass('selected');
-    }else{
-      $(this).addClass('selected').removeClass('unselected');
-      sendCrib($(this).parent());
-    }
+  $('.hand .card').click(function() {
+    $(this).toggleClass('selected');
+    sendCrib();
   });
 }
