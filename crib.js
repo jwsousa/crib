@@ -42,11 +42,7 @@ exports.Game = function(io){
    this.requestCrib('player');
    this.requestCrib('dealer');
   }
-  this.addCrib = function(playerName, cardIds){
-    var cardIndices = cardIds.map(function(cardId){
-      return parseInt(cardId[4]);
-    });
-    cardIndices.sort();
+  this.addCrib = function(playerName, cardIndices){
     var crib = this.cards['crib'];
     var hand = this.cards[playerName];
     crib.push(hand.splice(cardIndices[0], 1)[0]);
@@ -55,10 +51,37 @@ exports.Game = function(io){
     this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
 
     if (crib.length == 4){
-      this.showFlip();
-      this.setCribUnflipped()
+      this.cribComplete();
     }
   }
+  this.cribComplete = function(){
+    this.showFlip();
+    this.setCribUnflipped();
+    this.startPlay();
+  }
+  this.startPlay = function(){
+    this.playCount = 0;
+    this.sendPlayCount();
+    this.nextPlayer = 'player';
+    this.requestCard('dealer');
+  }
+  this.sendPlayCount = function(){
+    this.io.sockets.in(this.name).emit('new count', this.playCount);
+  }
+  this.cardPlayed = function(playerName, cardIndex){
+    var card = this.cards[playerName][cardIndex];
+    if(this.playCount + card['score'] > 31){
+      this.requestCard(playerName);
+      return;
+    }
+    this.sockets[playerName].emit('set disabled', {'section': 'hand', 'index': cardIndex});
+    this.sockets[this.oponent[playerName]].emit('set disabled', {'section': 'otherhand', 'number': cardIndex});
+
+    this.playCount += cards[score];
+    this.sendPlayCount();
+    this.requestCard(this.nextPlayer);
+  }
+
   this.pushHand = function(playerName){
     this.sockets[playerName].emit('set cards',
       {'section': 'hand',
@@ -66,10 +89,10 @@ exports.Game = function(io){
   }
   this.requestCrib = function(playerName){
     var game = this;
-    this.sockets[playerName].once('cards selected', function (data) {
-      game.addCrib(playerName, data['cards']);
+    this.requestCards(playerName, 2, function (cards) {
+      game.addCrib(playerName, cards);
+
     });
-    this.sockets[playerName].emit('need cards', {'number': 2});
   }
   this.setAllUnflipped = function(playerName){
     this.sockets[playerName].emit('set unflipped', {'section': 'flip', 'number': 1});
@@ -88,13 +111,24 @@ exports.Game = function(io){
       {'section': 'flip',
        'cards': this.cards['flip']});
   }
-  this.requestCard = function(playerName){
-   var game = this;
-    this.sockets[playerName].once('cards selected', function (data) {
-      game.cardPlayed(playerName, data['cards'][0]);
+  this.requestCards = function(playerName, number, callback){
+    var game = this;
+    this.sockets[playerName].once('cards selected', function(data){
+    var cardIndices = data['cards'].map(function(cardId){
+      return parseInt(cardId[4]);
     });
-    this.sockets[playerName].emit('need cards', {'number': 1});
+    return callback(cardIndices);
+    });
+    this.sockets[playerName].emit('need cards', {'number': number});
   }
+  this.requestCard = function(playerName){
+    var game = this;
+    this.requestCards(playerName, 1, function (cards) {
+      game.cardPlayed(playerName, cards[0]);
+    });
+  }
+
+
 }
 
 exports.cardFromDeckIndex = function(index){
