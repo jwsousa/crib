@@ -101,6 +101,20 @@ function setUnflipped(section, number){
     cardsDiv.append(makeUnflippedCard(i));
 }
 
+function setDisabled(section, index){
+  var cardDiv = $('#' + section + ' .cards .card' + index);
+  cardDiv.addClass('disabled');
+}
+
+function setCount(count){
+  var countDiv = $('#count');
+  if(count < 0){
+    countDiv.html('');
+  }else{
+    countDiv.html('Count: ' + count);
+  }
+}
+
 function selectCards(number){
 
   $('#hand .card').click(function() {

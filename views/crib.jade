@@ -7,6 +7,8 @@ block content
     #otherhand.section
       h3 Other Player's Hand:
       .cards
+    #numbers.section
+      #count
     #flipcrib.section
       #flip
         .cards
@@ -42,4 +44,12 @@ block content
 
       socket.on('set unflipped', function(data) {
         setUnflipped(data['section'], data['number']);
+      });
+
+      socket.on('set disabled', function(data) {
+        setDisabled(data['section'], data['index']);
+      });
+
+      socket.on('set count', function(count) {
+        setCount();
       });
