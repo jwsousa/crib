@@ -102,7 +102,7 @@ function setUnflipped(section, number){
 }
 
 function setDisabled(section, index){
-  var cardDiv = $('#' + section + ' .cards .card' + index);
+  var cardDiv = $('#' + section + ' .cards .card#card' + index);
   cardDiv.addClass('disabled');
 }
 
