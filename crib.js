@@ -56,7 +56,7 @@ exports.Game = function(io){
 
     if (crib.length == 4){
       this.showFlip();
-      this.setCribUnflipped()
+      this.setCribUnflipped();
     }
   }
   this.pushHand = function(playerName){
