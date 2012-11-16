@@ -28,22 +28,22 @@ block content
       var socket = io.connect();
 
       socket.on('message', function(message){
-        console.log('message received: ' + message);
+        console.debug('message received: ' + message);
         $('.message').html(message);
       });
 
       socket.on('set cards', function(data) {
-        console.log('set cards received: ' + data);
+        console.debug('set cards received: ' + data);
         var cards = data['cards'];
         setCardsOnPage(data['section'], cards);
       });
 
       socket.on('need cards', function(data) {
-        console.log('need cards received: ' + data);
+        console.debug('need cards received: ' + data);
         selectCards(data['number']);
       });
 
       socket.on('set unflipped', function(data) {
-        console.log('set unflipped received: ' + data);
+        console.debug('set unflipped received: ' + data);
         setUnflipped(data['section'], data['number']);
       });
