@@ -69,8 +69,9 @@ function Card(data){
   }
 }
 
-function setCard(section, index, card){
+function setCard(section, index, cardData){
   var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  var card = new Card(cardsData);
   cardDiv.html(card.htmlCode());
   cardDiv.addClass(card.suit);
   cardDiv.addClass('flipped');
