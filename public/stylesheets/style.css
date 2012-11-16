@@ -8,7 +8,7 @@
   text-align: center;
   font-family: Symbola, Quivira;
 }
-.card:hover {
+.card.selectable:hover {
   border-color:black;
 }
 .cards {
@@ -67,6 +67,6 @@
   display: inline-block;
 }
 .disabled {
-  opacity: 0.2;
-  filter: alpha(opacity=20);
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
