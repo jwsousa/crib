@@ -41,6 +41,15 @@ block content
         setCardsOnPage(data['section'], cards);
       });
 
+      socket.on('set card', function(data) {
+        console.debug('set card received:');
+        console.debug(data);
+        var section = data['section'];
+        var index = data['index'];
+        var card = data['card'];
+        setCard(section, index, card);
+      });
+
       socket.on('need cards', function(data) {
         console.debug('need cards received:');
         console.debug(data);
