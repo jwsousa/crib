@@ -55,7 +55,7 @@ exports.Game = function(io){
        'cards': this.cards[playerName]});
   }
   this.requestCrib = function(playerName){
-    sockets[playerName].once('crib selected', function (data) {
+    this.sockets[playerName].once('crib selected', function (data) {
       game.addCrib(playerName, data['crib']);
     });
     this.sockets[playerName].emit('need crib');
