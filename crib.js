@@ -38,7 +38,7 @@ exports.Game = function(io){
   this.startGame = function(){
     this.io.sockets.in(this.name).emit('set cards',
       {'section': 'crib',
-       'cards': []]});
+       'cards': []});
 
    this.pushHand('player');
    this.pushHand('dealer');
