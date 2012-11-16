@@ -151,17 +151,13 @@ function gameDisconnected(){
 var socket = null;
 
 function initSocket(__bool){
-  if(__bool == true){
     if ( !socket ) {
-      socket = io.connect();//{secure:false}
-      socket.on('connect', function(){console.log('connected')});
-      socket.on('disconnect', function (){console.log('disconnected')});
-    } else {
-      socket.socket.connect(); // Yep, socket.socket ( 2 times )
-    }
-  }else{
+    socket = io.connect();//{secure:false}
+    socket.on('connect', function(){console.log('connected')});
+    socket.on('disconnect', function (){console.log('disconnected')});
+  } else {
     socket.disconnect();
-    // socket = null; // We don't need this anymore
+    socket.socket.connect(); // Yep, socket.socket ( 2 times )
   }
 }
 
@@ -175,7 +171,7 @@ function startNewGame(){
   //   socket = io.connect();
   // }
 
-  initSocket(true);
+  initSocket();
 
 
   console.debug(socket);
