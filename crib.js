@@ -155,7 +155,7 @@ exports.Game = function(io){
        'cards': this.cards['flip']});
   }
   this.requestCards = function(playerName, number, callback){
-    this.sendToRoom('Requesting ' + number + ' card(s) from ' + playerName)
+    // this.sendToRoom('Requesting ' + number + ' card(s) from ' + playerName)
     var game = this;
     this.sockets[playerName].once('cards selected', function(data){
     var cardIndices = data['cards'].map(function(cardId){
