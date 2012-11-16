@@ -1,45 +1,58 @@
 "use strict";
 
-var game_counter = 0;
+var gameCount = 0;
 
 exports.Game = function(io){
   this.io = io;
-  this.name = 'crib' + game_counter++;
-  this.player_count = 0;
+  this.name = 'crib' + gameCount++;
+  this.playerCount = 0;
   this.deck = exports.makeDeck();
-  this.cards = exports.makeHands(this.deck);
-  this.dealer_socket = null;
-  this.player_socket = null;
+  this.cards = exports.makeCardsSets(this.deck);
+  this.sockets = {};
+  this.playersById = {};
 
   this.setDealer = function(socket){
-    this.dealer_socket = socket;
-    this.player_count++;
+    this.sockets['dealer'] = socket;
+    this.playersById[socket.id] = 'dealer';
+    this.playerCount++;
     socket.send('You are the dealer. Please wait for a second player and the cards will be dealt.')
   }
   this.setPlayer = function(socket){
-    this.player_socket = socket;
-    this.player_count++;
+    this.sockets['player'] = socket;
+    this.playersById[socket.id] = 'player';
+    this.playerCount++;
   }
   this.addClient = function(socket){
-    if(this.player_count==0){
+    if(this.playerCount==0){
       this.setDealer(socket);
-    }else if(this.player_count==1){
+    }else if(this.playerCount==1){
       this.setPlayer(socket);
     }
-    if(this.player_count==2){
+    if(this.playerCount==2){
       this.startGame();
     }
   }
   this.startGame = function(){
-    this.dealer_socket.emit('set cards',
-      {'hand': 'hand',
-       'cards': this.cards['dealer']});
-    this.player_socket.emit('set cards',
-      {'hand': 'hand',
-       'cards': this.cards['player']});
+   this.pushHand('player');
+   this.pushHand('dealer');
     // this.io.sockets.in(this.name).emit('need crib');
-    this.dealer_socket.emit('need crib');
-    this.player_socket.emit('need crib');
+    this.dealerSocket.emit('need crib');
+    this.playerSocket.emit('need crib');
+  }
+  this.addCrib = fuction(id, cardIds){
+    var cardIndices = cardIds.map(function(cardId){
+      return parseInt(cardId[5]);
+    });
+    var crib = this.cards['crib'];
+    var player = this.playersById[id];
+    var hand = this.cards[player];
+    crib.push(hand.splice(cardIndices[0], 1)[0]);
+    crib.push(hand.splice(cardIndices[1], 1)[0]);
+  }
+  this.pushHand = function(player){
+    this.sockets[player].emit('set cards',
+      {'hand': 'hand',
+       'cards': this.cards[player]});
   }
 }
 
@@ -105,11 +118,12 @@ exports.shuffleDeck = function(deck) {
   }
 }
 
-exports.makeHands = function(deck) {
+exports.makeCardSets = function(deck) {
   return {
     'flip': deck.slice(0,1),
     'dealer': deck.slice(1,7),
-    'player': deck.slice(7,13)
+    'player': deck.slice(7,13),
+    'crib': []
   };
 }
 
