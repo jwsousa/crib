@@ -69,6 +69,14 @@ function Card(data){
   }
 }
 
+function setCard(section, index, card){
+  var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  cardDiv.html(card.htmlCode());
+  cardDiv.addClass(card.suit);
+  cardDiv.addClass('flipped');
+
+}
+
 function setCardsOnPage(section, cards){
   var cardsDiv = $('#' + section + ' .cards');
   cardsDiv.html('');
