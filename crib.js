@@ -250,7 +250,7 @@ exports.cardFromDeckIndex = function(index){
   }
   var card = {'suit': suit, 'face': face, 'score': score};
   card.toString = function(){
-    return 'Card[' + this.suit + this.face + ']';
+    return 'Card[' + suit + face + ']';
   }
 }
 
