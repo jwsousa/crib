@@ -91,8 +91,7 @@ exports.Game = function(io){
   }
   this.startPlay = function(){
     this.setPlayCount(0);
-    this.playedCards = {'dealer':[], 'player':[]}
-    // this.nextPlayer = this.dealer;
+    this.playedCards = {'dealer':[], 'player':[], 'play':[]}
     this.requestCard(this.player);
   }
   this.setPlayCount = function(count){
@@ -100,11 +99,19 @@ exports.Game = function(io){
     this.emitToRoom('set count', {'count': this.playCount});
   }
   this.addScore = function(socketId, score){
-    this.scores[socketId] += score;
+    if(score<1)
+      return
+    this.scores[socketId] = Math.min(this.scores[socketId] + score, 121);
     this.sendScores();
+    if(this.scores[socketId] == 121) {
+      this.gameWon(socketId);
+    }
+  }
+  this.gameWon = function(socketId){
+      this.sockets[socketId].send("You've won!");
+      this.sockets[this.opponent[socketId]].send("You've lost!");
   }
   this.cardPlayed = function(socketId, cardIndex){
-    this.addScore(socketId, 1);
     var role = this.roles[socketId];
     var card = this.cards[role][cardIndex];
     if(this.playCount + card['score'] > 31){
@@ -112,6 +119,7 @@ exports.Game = function(io){
       return;
     }
     this.playedCards[role].push(card);
+    this.playedCards['play'].unshift(card);
     var opponent = this.opponent[socketId];
     this.sockets[socketId].emit('set disabled', {'section': 'hand',
                                                  'index': cardIndex});
@@ -121,7 +129,45 @@ exports.Game = function(io){
                                             'otherhand', 'index': cardIndex,
                                             'card': this.cards[role][cardIndex]});
     this.setPlayCount(this.playCount + card['score']);
+
+    this.addScore(socketId, this.checkPlayScore());
     this.requestNextCard(socketId);
+  }
+  this.checkPlayScore = function(){
+    var score = 0;
+    var playCards = this.playedCards['play'];
+    if(this.playCount==15){
+      score += 2;
+    }
+    if(playCards > 1 && playCards[0].face == playCards[1].face){
+      score += 2;
+    }
+    if(playCards > 2 && playCards[0].face == playCards[2].face){
+      score += 4;
+    }
+    if(playCards > 3 && playCards[0].face == playCards[3].face){
+      score += 6;
+    }
+    score += this.checkLastRun()
+    return score;
+  }
+  this.checkLastRun = function(){
+    var playCards = this.playedCards['play'];
+    nLastThanConsecutive = function(n){
+      sorted = playCards.slice(playCards.length-n,playCards.length).sort();
+      for(var i=1;i<n;i++){
+        if(sorted[0]!=sorted[i]-i){
+          return false;
+        }
+      }
+      return true;
+    };
+    for(n=a.length;n>2;n--){
+      if(nLastThanConsecutive(n)){
+        return n;
+      }
+    }
+    return 0;
   }
   this.requestNextCard = function(lastCardPlayer){
     if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
@@ -138,6 +184,11 @@ exports.Game = function(io){
     if(this.canPlay(lastCardPlayerRole)) {
       this.requestCard(lastCardPlayer);
       return;
+    }
+    if(this.playCount == 31){
+      this.addScore(lastCardPlayer, 2);
+    }else{
+      this.addScore(lastCardPlayer, 1);
     }
     this.setPlayCount(0);
     this.requestCard(nextCardPlayer);
