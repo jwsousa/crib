@@ -34,7 +34,7 @@ function Card(data){
   }
 
   this.htmlCode = function(){
-    var = '';
+    var code = '';
     if (this.suit=='S'){
       code += 'A';
     } else if (this.suit=='H'){
