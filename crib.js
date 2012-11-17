@@ -49,6 +49,8 @@ exports.Game = function(io){
     this.scores[socket.id] = 0;
     socket.join(this.name);
     this.resetHand(socket.id);
+    this.sockets[socket.id].emit('set scores', {'score': 0,
+                                                'opponentScore': 0});
     if(this.playerCount==1){
       this.setDealer(socket.id);
       this.sockets[this.dealer].send('You are the dealer. Please wait for a second player and the cards will be dealt.')
