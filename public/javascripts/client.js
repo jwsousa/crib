@@ -271,7 +271,7 @@ function newScoring(){
         score += 2;
       }
     }else if(combo.length>2){
-      var sorted = cards.sort(function(card){
+      var sorted = combo.sort(function(card){
         return card.index;
       });
       printCards(sorted);
