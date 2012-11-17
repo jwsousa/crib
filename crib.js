@@ -168,7 +168,8 @@ exports.Game = function(io){
     this.switchPlayers();
 
     this.newHand();
-    this.setAllUnflipped();
+    this.setAllUnflipped(this.dealer);
+    this.setAllUnflipped(this.player);
 
     var game = this;
     this.sockets[this.dealer].once('start next hand', function(){
