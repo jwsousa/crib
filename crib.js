@@ -143,8 +143,10 @@ exports.Game = function(io){
     this.requestNextCard(nextCardPlayer);
   }
   this.canPlay = function(playerName){
+    console.log('Checking if ' + playerName + ' can play. ' + this.cards[playerName] + ' ' + this.playedCards[playerName]);
     for(var i=0;i<this.cards[playerName].length;i++){
       var card = this.cards[playerName][i];
+      console.log('Has card been played?: ' + card);
       if(this.playedCards[playerName].indexOf(card) == -1){
         if(card.score + this.playCount <= 31){
           return true;
