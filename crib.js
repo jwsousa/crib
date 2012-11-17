@@ -31,8 +31,6 @@ exports.Game = function(io){
   this.opponent = {};
   this.scores = {};
 
-  this.newHand();
-
   this.setDealer = function(socketId){
     this.dealer = socketId
     this.roles[socketId] = 'dealer';
@@ -261,6 +259,8 @@ exports.Game = function(io){
       // this.sockets[socketId].disconnect();
     }
   }
+
+  this.newHand();
 
 }
 
