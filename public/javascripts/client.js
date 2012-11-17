@@ -281,9 +281,9 @@ function newScoring(){
   $('.message').html(score);
 }
 printCards = function(cards){
-  var s = '[' + cards[0];
+  var s = '[' + cards[0].toString();
   for(var i=1;i<cards.length;i++){
-    var s = ' ' + cards[i];
+    var s = ' ' + cards[i].toString();
   }
   return s + ']';
 }
