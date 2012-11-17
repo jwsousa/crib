@@ -28,6 +28,7 @@ app.configure('development', function(){
 });
 
 app.get('/', crib.index);
+app.get('/scoring', crib.scoring);
 
 var server = require('http').createServer(app);
 server.listen(app.get('port'), function(){
