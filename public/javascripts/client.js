@@ -272,7 +272,7 @@ function newScoring(){
       }
     }else if(combo.length>2){
       combo.sort(function(card1, card2){
-        return card2.index - card1.index;
+        return card1.index - card2.index;
       });
       printCards(combo);
       if(isRun(combo)){
