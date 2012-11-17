@@ -125,7 +125,7 @@ function setCount(count){
   }
 }
 
-function setScore(score, opponentScore){
+function setScores(score, opponentScore){
   $('#score').html('Score: ' + score);
   $('#opponentscore').html('Opponent Score: ' + opponentScore);
 }
