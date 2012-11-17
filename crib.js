@@ -135,7 +135,7 @@ exports.Game = function(io){
       this.requestCard(nextCardPlayer);
       return;
     }
-    if(this.canPlay(otherPlayer)) {
+    if(this.canPlay(lastCardPlayerRole)) {
       this.requestNextCard(lastCardPlayer);
       return;
     }
