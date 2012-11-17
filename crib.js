@@ -168,6 +168,7 @@ exports.Game = function(io){
     };
     for(var n=playCards.length;n>2;n--){
       if(nLastThanConsecutive(n)){
+        console.log('Run: +'+n);
         return n;
       }
     }
