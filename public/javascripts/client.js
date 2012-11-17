@@ -272,6 +272,7 @@ function newScoring(){
       }
     }else if(combo.length>2){
       var sorted = combo.sort(function(card){
+        console.log(card.toString())
         return card.index;
       });
       printCards(sorted);
