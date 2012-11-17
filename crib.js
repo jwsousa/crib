@@ -73,14 +73,17 @@ exports.Game = function(io){
     this.requestCrib(this.dealer);
     this.requestCrib(this.player);
   }
-  this.addCrib = function(playerName, cardIndices){
+  this.addCrib = function(socketId, cardIndices){
+    var role = this.roles[socketId];
     var crib = this.cards['crib'];
-    var hand = this.cards[playerName];
+    var hand = this.cards[role];
     crib.push(hand.splice(cardIndices[0], 1)[0]);
     crib.push(hand.splice(cardIndices[1]-1, 1)[0]);
-    this.pushHand(playerName);
-    this.sockets[this.oponent[playerName]].emit('set unflipped', {'section': 'otherhand', 'number': 4});
-    this.io.sockets.in(this.name).emit('set unflipped', {'section': 'crib', 'number': crib.length});
+    this.pushHand(socketId);
+    this.sockets[this.oponent[socketId]].emit('set unflipped', {'section': 'otherhand',
+                                                                'number': 4});
+    this.emitToRoom('set unflipped', {'section': 'crib',
+                                      'number': crib.length});
 
     if (crib.length == 4){
       this.cribComplete();
@@ -196,7 +199,7 @@ exports.Game = function(io){
   this.requestCrib = function(socketId){
     var game = this;
     this.requestCards(socketId, 2, function (cards) {
-      game.addCrib(game.role[socketId], cards);
+      game.addCrib(socketId, cards);
     });
   }
   this.requestCard = function(socketId){
