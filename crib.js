@@ -329,11 +329,11 @@ exports.cardFromDeckIndex = function(index){
   var face = playValue;
   if (index == 0){
     face = 'A';
-  }else if (score == 9){
+  }else if (index == 9){
     face = 'J';
-  }else if (score == 11){
+  }else if (index == 11){
     face = 'Q';
-  }else if (score == 12){
+  }else if (index == 12){
     face = 'K'
   }
   var card = {'suit': suit, 'face': face, 'playValue': playValue, 'index': index};
