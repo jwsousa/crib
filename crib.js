@@ -212,6 +212,8 @@ exports.Game = function(io){
   this.setAllUnflipped = function(socketId){
     var socket = this.sockets[socketId];
     socket.emit('set cards',{'section': 'crib', 'cards': []});
+    socket.emit('set unflipped', {'section': 'crib',
+                                  'number': this.cards['crib'].length});
     socket.emit('set count',{'count': -1});
     socket.emit('set unflipped', {'section': 'flip',
                                   'number': 1});
