@@ -44,11 +44,11 @@ exports.Game = function(io){
       console.log('Already 2 people in this game!');
       return;
     }
-
     this.playerCount++;
     this.sockets[socket.id] = socket;
     this.scores[socket.id] = 0;
     socket.join(this.name);
+    this.setAllUnflipped(socket.id);
     if(this.playerCount==1){
       this.setDealer(socket.id);
       this.sockets[this.dealer].send('You are the dealer. Please wait for a second player and the cards will be dealt.')
@@ -56,11 +56,6 @@ exports.Game = function(io){
       this.setPlayer(socket.id);
       this.sockets[this.player].send('You are NOT the dealer.');
       this.sockets[this.dealer].send('You are the dealer.');
-    }
-
-    this.setAllUnflipped(socket.id);
-
-    if(this.playerCount==2){
       this.startGame();
     }
   }
