@@ -74,7 +74,7 @@ exports.Game = function(io){
     this.requestCrib(this.player);
   }
   this.addCrib = function(socketId, cardIndices){
-    var role = this.roles[socketId];
+    var role = this.role[socketId];
     var crib = this.cards['crib'];
     var hand = this.cards[role];
     crib.push(hand.splice(cardIndices[0], 1)[0]);
