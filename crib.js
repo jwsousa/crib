@@ -179,8 +179,8 @@ exports.Game = function(io){
   this.switchPlayers = function(){
     var currentDealer = this.dealer;
     var currentPlayer = this.player;
-    setDealer(currentPlayer);
-    setPlayer(currentDealer);
+    this.setDealer(currentPlayer);
+    this.setPlayer(currentDealer);
   }
   this.newHand = function(){
     this.deck = exports.makeDeck();
