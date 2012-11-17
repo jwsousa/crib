@@ -54,7 +54,7 @@ function Card(data){
       code += this.playValue;
     }
     code += ';';
-    code += ' ' + this.playValue + ' ' + this.face;
+    // code += ' ' + this.playValue + ' ' + this.face;
     return code;
   }
 
