@@ -77,7 +77,11 @@
 #numbers.section div {
   display: inline-block;
   padding: 0px 20px;
+  margin: 0px 30px;
   border-width: 1px;
   border-color: black;
   border-style: solid;
+}
+#numbers.section div:empty{
+    display:none
 }
