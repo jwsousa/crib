@@ -321,8 +321,8 @@ combinations = function(hand) {
       }
       return;
     }
-    for (var j = 0; j < src.length; j++) {
-      fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+    for (var j = 0; j < hand.length; j++) {
+      fn(n - 1, hand.slice(j + 1), got.concat([hand[j]]), all);
     }
     return;
   }
