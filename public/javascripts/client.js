@@ -235,4 +235,9 @@ function startNewGame(){
     console.log('disconnected!');
     gameDisconnected();
   });
+
+  socket.on('new hand ready', function(){
+    console.log('new hand ready received');
+    $('#newHand.button').removeClass('hidden');
+  });
 }
