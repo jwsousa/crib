@@ -329,7 +329,7 @@ exports.cardFromDeckIndex = function(index){
   var face = index+1;
   if (index == 0){
     face = 'A';
-  }else if (index == 9){
+  }else if (index == 10){
     face = 'J';
   }else if (index == 11){
     face = 'Q';
