@@ -289,11 +289,11 @@ cardFromDeckIndex = function(index){
 makeDeck = function(){
   var deck = []
   for (var i=0;i<52;i++){
-    var card = exports.cardFromDeckIndex(i);
+    var card = cardFromDeckIndex(i);
     // card.print();
     deck[i] = card;
   }
-  exports.shuffleDeck(deck);
+  shuffleDeck(deck);
   return deck;
 }
 
