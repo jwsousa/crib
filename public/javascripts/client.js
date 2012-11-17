@@ -270,11 +270,11 @@ function newScoring(){
       if(combo[0].face == combo[1].face){
         score += 2;
       }
-    }
-    printCards(combo);
-    if(isRun(combo)){
-      console.log('Run found!');
-
+    }else if(combo.length>2){
+      printCards(combo);
+      if(isRun(combo)){
+        console.log('Run found!');
+      }
     }
   };
 
@@ -283,7 +283,7 @@ function newScoring(){
 printCards = function(cards){
   var s = '[' + cards[0].toString();
   for(var i=1;i<cards.length;i++){
-    var s = ' ' + cards[i].toString();
+    s += ' ' + cards[i].toString();
   }
   console.log(s + ']');
 }
