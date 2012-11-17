@@ -259,6 +259,7 @@ function newScoring(){
 
   var combos = combinations(hand);
   console.debug(combos);
+  var runs = [];
   for (var i=0;i<combos.length;i++) {
     var combo = combos[i];
     var cardSum = addCardSum(combo);
@@ -270,9 +271,25 @@ function newScoring(){
         score += 2;
       }
     }
+    if(isRun(combo)){
+      console.log('Run found!');
+      console.debug(combo);
+    }
   };
+
   $('.message').html(score);
 }
+isRun = function(cards){
+  var sorted = cards.sort(function(card){
+    return card.index;
+  });
+  for(var i=1;i<n;i++){
+    if(sorted[0].index!=sorted[i].index-i){
+      return false;
+    }
+  }
+  return true;
+};
 
 function addCardSum(cards){
   var total = 0;
