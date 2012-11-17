@@ -171,11 +171,11 @@ exports.Game = function(io){
 
     var game = this;
     this.sockets[this.dealer].once('start next hand', function(){
-      this.setAllUnflipped(this.dealer);
+      game.setAllUnflipped(game.dealer);
       game.pushHand(game.dealer);
     });
     this.sockets[this.player].once('start next hand', function(){
-      this.setAllUnflipped(this.player);
+      game.setAllUnflipped(game.player);
       game.pushHand(game.player);
     });
   }
