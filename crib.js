@@ -102,7 +102,7 @@ exports.Game = function(io){
   }
   this.setPlayCount = function(count){
     this.playCount = count;
-    this.io.sockets.in(this.name).emit('set count', {'count': this.playCount});
+    this.emitToRoom('set count', {'count': this.playCount});
   }
   this.cardPlayed = function(socketId, cardIndex){
     var role = this.role[socketId];
@@ -166,9 +166,9 @@ exports.Game = function(io){
     return false;
   }
   this.showAll = function(){
-    this.emitToRoom.emit('set cards', {'section': 'crib',
+    this.emitToRoom('set cards', {'section': 'crib',
                                        'cards': this.cards['crib']});
-    this.emitToRoom.emit('enable all');
+    this.emitToRoom('enable all');
   }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);
