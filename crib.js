@@ -137,15 +137,19 @@ exports.Game = function(io){
     var score = 0;
     var playCards = this.playedCards['play'];
     if(this.playCount==15){
+      console.log('Hit 15: +2');
       score += 2;
     }
     if(playCards > 1 && playCards[0].face == playCards[1].face){
+      console.log('Pair: +2');
       score += 2;
     }
     if(playCards > 2 && playCards[0].face == playCards[2].face){
+      console.log('Royal Pair: +4');
       score += 4;
     }
     if(playCards > 3 && playCards[0].face == playCards[3].face){
+      console.log('4 of a Kind: +12');
       score += 6;
     }
     score += this.checkLastRun()
