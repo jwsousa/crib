@@ -57,7 +57,7 @@ function Card(data){
       code += this.playValue;
     }
     code += ';';
-    code += ' ' + code + ' ' + this.playValue + ' ' + this.face + ' ' + this.index;
+    // code += ' ' + code + ' ' + this.playValue + ' ' + this.face + ' ' + this.index;
     code = '&#x1F0' + code;
     return code;
   }
