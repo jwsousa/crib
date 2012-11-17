@@ -126,9 +126,13 @@ function setCount(count){
 }
 
 function selectCards(number){
+  $('.card').unbind('click').removeClass('selectable');
   var selectableCards = $('#hand .card:not(.disabled)');
+  console.log('select card:');
+  console.debug(selectableCards);
   selectableCards.addClass('selectable');
   selectableCards.click(function() {
+    console.log('selectable card clicked');
     $(this).toggleClass('selected');
     var selectedCardsInHand = $('#hand .card.selected');
     if(selectedCardsInHand.length == number){
@@ -151,17 +155,14 @@ function gameDisconnected(){
 var socket = null;
 
 function initSocket(__bool){
-  if(__bool == true){
     if ( !socket ) {
-      socket = io.connect();//{secure:false}
-      socket.on('connect', function(){console.log('connected')});
-      socket.on('disconnect', function (){console.log('disconnected')});
-    } else {
-      socket.socket.connect(); // Yep, socket.socket ( 2 times )
-    }
-  }else{
-    socket.disconnect();
-    // socket = null; // We don't need this anymore
+    socket = io.connect();//{secure:false}
+    socket.on('connect', function(){console.log('connected')});
+    socket.on('disconnect', function (){console.log('disconnected')});
+  } else {
+    socket.removeAllListeners();
+    socket.disconnect()
+    socket.socket.connect();
   }
 }
 
@@ -175,7 +176,7 @@ function startNewGame(){
   //   socket = io.connect();
   // }
 
-  initSocket(true);
+  initSocket();
 
 
   console.debug(socket);
@@ -233,5 +234,10 @@ function startNewGame(){
   socket.on('disconnect', function(){
     console.log('disconnected!');
     gameDisconnected();
+  });
+
+  socket.on('new hand ready', function(){
+    console.log('new hand ready received');
+    $('#newHand.button').removeClass('hidden');
   });
 }
