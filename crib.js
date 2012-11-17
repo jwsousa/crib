@@ -224,7 +224,7 @@ exports.Game = function(io){
       otherCards = 6;
     }
     socket.emit('set unflipped', {'section': 'otherhand',
-                                  'number': otherCards);
+                                  'number': otherCards});
   }
   this.setCribUnflipped = function(){
     this.emitToRoom('set unflipped', {'section': 'crib', 'number': 4});
