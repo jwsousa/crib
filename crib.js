@@ -100,7 +100,8 @@ exports.Game = function(io){
   }
   this.addScore = function(socketId, score){
     if(score<1)
-      return
+      return;
+    console.log('Adding to: ' + score);
     this.scores[socketId] = Math.min(this.scores[socketId] + score, 121);
     this.sendScores();
     if(this.scores[socketId] == 121) {
