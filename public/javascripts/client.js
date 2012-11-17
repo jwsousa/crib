@@ -3,6 +3,7 @@
 function Card(data){
   this.suit = data['suit'];
   this.face = data['face'];
+  this.playValue = data['playValue'];
 
   this.toJSON = function(){
     return {'suit':this.suit, 'face':this.face}
@@ -43,18 +44,14 @@ function Card(data){
     } else if (this.suit=='C'){
       code += 'D';
     }
-    if (this.face=='10'){
-      code += 'A';
-    } else if (this.face=='J'){
+    if (this.face=='J'){
       code += 'B';
     } else if (this.face=='Q'){
       code += 'D';
     } else if (this.face=='K'){
       code += 'E';
-    } else if (this.face=='A'){
-      code += '1';
-    } else{
-      code += this.face;
+    {
+      code += this.playValue;
     }
     code += ';';
     return code;
