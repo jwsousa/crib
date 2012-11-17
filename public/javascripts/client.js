@@ -280,6 +280,9 @@ function newScoring(){
   $('.message').html(score);
 }
 isRun = function(cards){
+  if(cards.length<3){
+    return false;
+  }
   var sorted = cards.sort(function(card){
     return card.index;
   });
