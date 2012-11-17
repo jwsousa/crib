@@ -247,3 +247,64 @@ function startNewGame(){
     setScores(data['score'], data['opponentScore']);
   })
 };
+
+
+function newScoring(){
+  console.log('New scoring!');
+  var deck = makeDeck();
+  console.debug(makeDeck);
+  setCardsOnPage('hand', deck.slice(0,5));
+}
+
+cardFromDeckIndex = function(index){
+  var suit = null;
+  if (index%4 === 0){
+    suit = 'H';
+  }else if (index%4 == 1){
+    suit = 'D';
+  }else if (index%4 == 2){
+    suit = 'C';
+  }else if (index%4 == 3){
+    suit = 'S';
+  }
+  var index = index%13;
+  var playValue = Math.min(index+1, 10);
+  var face = index+1;
+  if (index == 0){
+    face = 'A';
+  }else if (index == 10){
+    face = 'J';
+  }else if (index == 11){
+    face = 'Q';
+  }else if (index == 12){
+    face = 'K'
+  }
+  var card = {'suit': suit, 'face': face, 'playValue': playValue, 'index': index};
+  card.toString = function(){
+    return 'Card[' + this.suit + this.face + ']';
+  }
+  return card;
+}
+
+makeDeck = function(){
+  var deck = []
+  for (var i=0;i<52;i++){
+    var card = exports.cardFromDeckIndex(i);
+    // card.print();
+    deck[i] = card;
+  }
+  exports.shuffleDeck(deck);
+  return deck;
+}
+
+shuffleDeck = function(deck) {
+  var i = deck.length;
+  if ( i == 0 ) return false;
+  while ( --i ) {
+    var j = Math.floor( Math.random() * ( i + 1 ) );
+    var tempi = deck[i];
+    var tempj = deck[j];
+    deck[i] = tempj;
+    deck[j] = tempi;
+  }
+}
