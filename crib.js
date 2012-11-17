@@ -248,7 +248,10 @@ exports.cardFromDeckIndex = function(index){
   }if (score == 1){
     face = 'A'
   }
-  return {'suit': suit, 'face': face, 'score': score};
+  var card = {'suit': suit, 'face': face, 'score': score};
+  card.toString = function(){
+    return 'Card[' + this.suit + this.face + ']';
+  }
 }
 
 
