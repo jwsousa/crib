@@ -125,7 +125,7 @@ exports.Game = function(io){
   }
   this.requestNextCard = function(lastCardPlayer){
     if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
-      this.showAll();
+      this.handOver();
       return
     }
     var lastCardPlayerRole = this.role[lastCardPlayer];
@@ -165,10 +165,11 @@ exports.Game = function(io){
     console.log('returning false!!\n')
     return false;
   }
-  this.showAll = function(){
+  this.handOver = function(){
     this.emitToRoom('set cards', {'section': 'crib',
                                        'cards': this.cards['crib']});
     this.emitToRoom('enable all');
+    this.emitToRoom('new hand ready');
   }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);
