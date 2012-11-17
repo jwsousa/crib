@@ -28,7 +28,7 @@ exports.Game = function(io){
   this.cards = null;
   this.sockets = {};
   this.roles = {};
-  this.oponent = {};
+  this.opponent = {};
   this.scores = {};
 
   this.setDealer = function(socketId){
@@ -65,8 +65,8 @@ exports.Game = function(io){
     }
   }
   this.startGame = function(){
-    this.oponent[this.dealer] = this.player
-    this.oponent[this.player] = this.dealer
+    this.opponent[this.dealer] = this.player
+    this.opponent[this.player] = this.dealer
 
     this.newHand();
   }
@@ -77,7 +77,7 @@ exports.Game = function(io){
     crib.push(hand.splice(cardIndices[0], 1)[0]);
     crib.push(hand.splice(cardIndices[1]-1, 1)[0]);
     this.pushHand(socketId);
-    this.sockets[this.oponent[socketId]].emit('set unflipped', {'section': 'otherhand',
+    this.sockets[this.opponent[socketId]].emit('set unflipped', {'section': 'otherhand',
                                                                 'number': 4});
     this.emitToRoom('set unflipped', {'section': 'crib',
                                       'number': crib.length});
@@ -114,12 +114,12 @@ exports.Game = function(io){
       return;
     }
     this.playedCards[role].push(card);
-    var oponent = this.oponent[socketId];
+    var opponent = this.opponent[socketId];
     this.sockets[socketId].emit('set disabled', {'section': 'hand',
                                                  'index': cardIndex});
-    this.sockets[oponent].emit('set disabled', {'section': 'otherhand',
+    this.sockets[opponent].emit('set disabled', {'section': 'otherhand',
                                                 'index': cardIndex});
-    this.sockets[oponent].emit('set card', {'section':
+    this.sockets[opponent].emit('set card', {'section':
                                             'otherhand', 'index': cardIndex,
                                             'card': this.cards[role][cardIndex]});
     this.setPlayCount(this.playCount + card['score']);
@@ -131,7 +131,7 @@ exports.Game = function(io){
       return
     }
     var lastCardPlayerRole = this.roles[lastCardPlayer];
-    var nextCardPlayer = this.oponent[lastCardPlayer];
+    var nextCardPlayer = this.opponent[lastCardPlayer];
     var nextCardPlayerRole = this.roles[nextCardPlayer];
     if(this.canPlay(nextCardPlayerRole)) {
       this.requestCard(nextCardPlayer);
