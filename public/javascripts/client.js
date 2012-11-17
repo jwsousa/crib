@@ -271,8 +271,11 @@ function newScoring(){
         score += 2;
       }
     }else if(combo.length>2){
-      printCards(combo);
-      if(isRun(combo)){
+      var sorted = cards.sort(function(card){
+        return card.index;
+      });
+      printCards(sorted);
+      if(isRun(sorted)){
         console.log('Run found!');
       }
     }
