@@ -132,18 +132,18 @@ exports.Game = function(io){
     var nextCardPlayer = this.oponent[lastCardPlayer];
     var nextCardPlayerRole = this.role[nextCardPlayer];
     if(this.canPlay(nextCardPlayerRole)) {
-      console.log('Requesting card from ' + nextCardPlayerRole + ' ' + nextCardPlayer)
+      console.log('1Requesting card from ' + nextCardPlayerRole + ' ' + nextCardPlayer)
       this.requestCard(nextCardPlayer);
       return;
     }
     if(this.canPlay(lastCardPlayerRole)) {
-      console.log('Requesting card from ' + lastCardPlayerRole + ' ' + lastCardPlayer)
-      this.requestNextCard(lastCardPlayer);
+      console.log('2Requesting card from ' + lastCardPlayerRole + ' ' + lastCardPlayer)
+      this.requestCard(lastCardPlayer);
       return;
     }
     this.setPlayCount(0);
     console.log('Resetting and requesting card from ' + nextCardPlayerRole + ' ' + nextCardPlayer)
-    this.requestNextCard(nextCardPlayer);
+    this.requestCard(nextCardPlayer);
   }
   this.canPlay = function(playerName){
     console.log('Checking if ' + playerName + ' can play. Play count: ' + this.playCount);
