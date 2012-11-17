@@ -162,7 +162,7 @@ exports.Game = function(io){
       }
       return true;
     };
-    for(n=a.length;n>2;n--){
+    for(n=playCards.length;n>2;n--){
       if(nLastThanConsecutive(n)){
         return n;
       }
