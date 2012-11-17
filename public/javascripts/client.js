@@ -44,7 +44,9 @@ function Card(data){
     } else if (this.suit=='C'){
       code += 'D';
     }
-    if (this.face=='J'){
+    if (this.face==10){
+      code += 'A';
+    } else if (this.face=='J'){
       code += 'B';
     } else if (this.face=='Q'){
       code += 'D';
