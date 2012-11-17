@@ -271,7 +271,7 @@ function newScoring(){
         score += 2;
       }
     }
-    console.debug(combo);
+    console.log(combo);
     console.log(combo[0]);
     console.log(combo[0].toString());
     if(isRun(combo)){
