@@ -159,7 +159,7 @@ exports.Game = function(io){
   this.checkLastRun = function(){
     var playCards = this.playedCards['play'];
     function nLastThanConsecutive(n){
-      var sorted = playCards.slice(playCards.length-n,playCards.length).sort();
+      var sorted = playCards.slice(playCards.length-n,playCards.length).sort(exports.cardCompare);
       for(var i=1;i<n;i++){
         if(sorted[0].index!=sorted[i].index-i){
           return false;
