@@ -217,8 +217,14 @@ exports.Game = function(io){
                                   'number': 1});
     socket.emit('set unflipped', {'section': 'hand',
                                   'number': this.cards[this.roles[socketId]].length});
+    var otherCards = this.cards[this.roles[this.opponent[socketId]]];
+    if(otherCards){
+      otherCards = otherCards.length;
+    }else{
+      otherCards = 6;
+    }
     socket.emit('set unflipped', {'section': 'otherhand',
-                                  'number': this.cards[this.roles[this.opponent[socketId]]].length});
+                                  'number': otherCards);
   }
   this.setCribUnflipped = function(){
     this.emitToRoom('set unflipped', {'section': 'crib', 'number': 4});
