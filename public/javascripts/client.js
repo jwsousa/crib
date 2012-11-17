@@ -283,7 +283,7 @@ isRun = function(cards){
   var sorted = cards.sort(function(card){
     return card.index;
   });
-  for(var i=1;i<n;i++){
+  for(var i=1;i<cards.length;i++){
     if(sorted[0].index!=sorted[i].index-i){
       return false;
     }
