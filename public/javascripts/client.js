@@ -252,8 +252,12 @@ function startNewGame(){
 function newScoring(){
   console.log('New scoring!');
   var deck = makeDeck();
-  console.debug(makeDeck);
-  setCardsOnPage('hand', deck.slice(0,5));
+  var hand = deck.slice(0,5);
+  console.debug(hand);
+  setCardsOnPage('hand', hand);
+
+  var combos = combinations(hand);
+  console.debug(combos);
 }
 
 cardFromDeckIndex = function(index){
@@ -307,4 +311,25 @@ shuffleDeck = function(deck) {
     deck[i] = tempj;
     deck[j] = tempi;
   }
+}
+
+combinations = function(hand) {
+  var fn = function(n, hand, got, all) {
+    if (n == 0) {
+      if (got.length > 0) {
+        all.push[all.length] = got;
+      }
+      return;
+    }
+    for (var j = 0; j < src.length; j++) {
+      fn(n - 1, src.slice(j + 1), got.concat([src[j]]), all);
+    }
+    return;
+  }
+  var all = [];
+  for (var i = 0; i < hand.length; i++) {
+    fn(i, hand, [], all);
+  }
+  all.push(hand);
+  return all;
 }
