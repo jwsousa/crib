@@ -43,17 +43,20 @@ exports.Game = function(io){
     this.sockets[this.dealer].send('You are the dealer.');
   }
   this.addClient = function(socket){
-    if(this.playerCount==0){
-      this.setDealer(socket);
-    }else if(this.playerCount==1){
-      this.setPlayer(socket);
-    }else{
+    if(playerCount>=2){
       console.log('Already 2 people in this game!');
       return;
     }
+
     this.playerCount++;
     this.sockets[socket.id] = socket;
     socket.join(this.name);
+    if(this.playerCount==1){
+      this.setDealer(socket);
+    }else if(this.playerCount==2){
+      this.setPlayer(socket);
+    }
+
     this.setAllUnflipped(socket.id);
 
     if(this.playerCount==2){
