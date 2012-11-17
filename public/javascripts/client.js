@@ -271,9 +271,10 @@ function newScoring(){
         score += 2;
       }
     }
+    console.debug(combo);
     if(isRun(combo)){
       console.log('Run found!');
-      console.debug(combo);
+
     }
   };
 
