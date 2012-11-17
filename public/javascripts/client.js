@@ -274,9 +274,16 @@ function newScoring(){
       printCards(combo);
       if(isRun(combo)){
         console.log('Run found!');
+        runs.push(combo.length);
       }
     }
-  };
+  }
+  runs.sort().reverse();
+  for (var i=0;i<runs.length;i++) {
+    if(runs[0]==runs[i]){
+      score += runs[i];
+    }
+  }
 
   $('.message').html(score);
 }
