@@ -262,7 +262,7 @@ function newScoring(){
   for (var i=0;i<combos.length;i++) {
     var cardSum = addCardSum(combos[i]);
     if(cardSum==15){
-      socre += 2;
+      score += 2;
     }
   };
   $('.message').html(score);
