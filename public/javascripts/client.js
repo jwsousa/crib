@@ -125,6 +125,11 @@ function setCount(count){
   }
 }
 
+function setScores(score, opponentScore){
+  $('#score').html('Score: ' + score);
+  $('#opponentscore').html('Opponent Score: ' + opponentScore);
+}
+
 function selectCards(number){
   $('.card').unbind('click').removeClass('selectable');
   var selectableCards = $('#hand .card:not(.disabled)');
@@ -166,20 +171,13 @@ function initSocket(__bool){
   }
 }
 
+function startNextHand(){
+  socket.emit('start next hand');
+}
+
 function startNewGame(){
   console.log('Starting new game.');
-  // if(socket && socket.socket.connected){
-  //   console.log('Old socket exists. Reconnecting.');
-  //   socket.socket.disconnect();
-  //   socket.socket.connect()
-  // }else{
-  //   socket = io.connect();
-  // }
-
   initSocket();
-
-
-  console.debug(socket);
 
   socket.on('message', function(message){
     console.debug('message received: ' + message);
@@ -240,4 +238,10 @@ function startNewGame(){
     console.log('new hand ready received');
     $('#newHand.button').removeClass('hidden');
   });
+
+  socket.on('set scores', function(data){
+    console.debug('set scores received:');
+    console.debug(data);
+    setScores(data['score'], data['opponentScore']);
+  })
 }
