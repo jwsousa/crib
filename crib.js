@@ -52,9 +52,9 @@ exports.Game = function(io){
     this.sockets[socket.id] = socket;
     socket.join(this.name);
     if(this.playerCount==1){
-      this.setDealer(socket);
+      this.setDealer(socket.id);
     }else if(this.playerCount==2){
-      this.setPlayer(socket);
+      this.setPlayer(socket.id);
     }
 
     this.setAllUnflipped(socket.id);
