@@ -212,7 +212,7 @@ exports.Game = function(io){
     socket.emit('set unflipped', {'section': 'flip',
                                   'number': 1});
     socket.emit('set unflipped', {'section': 'hand',
-                                  'number': 6);
+                                  'number': 6});
     socket.emit('set unflipped', {'section': 'otherhand',
                                   'number': 6-this.cards['crib'].length});
   }
