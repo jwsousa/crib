@@ -200,7 +200,7 @@ exports.Game = function(io){
     for(var cardIndex in cards) {
       var card = cards[cardIndex];
       var cardNotPlayed = playedCards.indexOf(card) == -1;
-      if(cardNotPlayed && card.score + this.playCount <= 31){
+      if(cardNotPlayed && card.playValue + this.playCount <= 31){
         return true;
       }
     }
