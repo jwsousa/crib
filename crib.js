@@ -326,7 +326,7 @@ exports.cardFromDeckIndex = function(index){
   }
   var index = index%13;
   var playValue = Math.max(index+1, 10);
-  var face = ''+index+1;
+  var face = index+1;
   if (index == 0){
     face = 'A';
   }else if (index == 9){
