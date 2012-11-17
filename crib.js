@@ -101,7 +101,7 @@ exports.Game = function(io){
   this.addScore = function(socketId, score){
     if(score<1)
       return;
-    console.log('Adding to: ' + score);
+    console.log('Adding: ' + score);
     this.scores[socketId] = Math.min(this.scores[socketId] + score, 121);
     this.sendScores();
     if(this.scores[socketId] == 121) {
@@ -177,6 +177,7 @@ exports.Game = function(io){
   }
   this.requestNextCard = function(lastCardPlayer){
     if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
+      this.addScore(lastCardPlayer, 1);
       this.handOver();
       return
     }
