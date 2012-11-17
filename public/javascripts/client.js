@@ -50,7 +50,7 @@ function Card(data){
       code += 'D';
     } else if (this.face=='K'){
       code += 'E';
-    else {
+    } else {
       code += this.playValue;
     }
     code += ';';
