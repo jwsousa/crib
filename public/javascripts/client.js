@@ -271,9 +271,6 @@ function newScoring(){
         score += 2;
       }
     }else if(combo.length>2){
-      combo.sort(function(card1, card2){
-        return card1.index - card2.index;
-      });
       printCards(combo);
       if(isRun(combo)){
         console.log('Run found!');
@@ -295,6 +292,10 @@ isRun = function(cards){
   if(cards.length<3){
     return false;
   }
+  sorted = cards.slice(0);
+  sorted.sort(function(card1, card2){
+        return card1.index - card2.index;
+  });
   for(var i=1;i<cards.length;i++){
     if(sorted[0].index!=sorted[i].index-i){
       return false;
