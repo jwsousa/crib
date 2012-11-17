@@ -36,9 +36,9 @@ exports.Game = function(io){
     this.role[socketId] = 'dealer';
     this.sockets[this.dealer].send('You are the dealer. Please wait for a second player and the cards will be dealt.')
   }
-  this.setPlayer = function(socket){
-    this.player = socket.id
-    this.role[socket.id] = 'player';
+  this.setPlayer = function(socketId){
+    this.player = socketId
+    this.role[socketId] = 'player';
     this.sockets[this.player].send('You are NOT the dealer.');
     this.sockets[this.dealer].send('You are the dealer.');
   }
