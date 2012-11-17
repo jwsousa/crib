@@ -285,7 +285,7 @@ printCards = function(cards){
   for(var i=1;i<cards.length;i++){
     var s = ' ' + cards[i].toString();
   }
-  return s + ']';
+  console.log(s + ']');
 }
 
 isRun = function(cards){
