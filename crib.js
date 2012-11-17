@@ -197,6 +197,7 @@ exports.Game = function(io){
     }else{
       this.addScore(lastCardPlayer, 1);
     }
+    this.playedCards['play'] = [];
     this.setPlayCount(0);
     this.requestCard(nextCardPlayer);
   }
