@@ -73,3 +73,7 @@
 .hidden {
   display: none;
 }
+
+#numbers.section div {
+  display: inline-block;
+}
