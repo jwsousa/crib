@@ -282,6 +282,14 @@ function newScoring(){
 
   $('.message').html(score);
 }
+printCards = function(cards){
+  var s = '[' + cards[0];
+  for(var i=1;i<cards.length;i++){
+    var s = ' ' + cards[i];
+  }
+  return s + ']';
+}
+
 isRun = function(cards){
   if(cards.length<3){
     return false;
