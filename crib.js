@@ -168,14 +168,14 @@ exports.Game = function(io){
     this.switchPlayers();
 
     this.newHand();
-    this.setAllUnflipped(this.dealer);
-    this.setAllUnflipped(this.player);
 
     var game = this;
     this.sockets[this.dealer].once('start next hand', function(){
+      this.setAllUnflipped(this.dealer);
       game.pushHand(game.dealer);
     });
     this.sockets[this.player].once('start next hand', function(){
+      this.setAllUnflipped(this.player);
       game.pushHand(game.player);
     });
   }
