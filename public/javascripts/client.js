@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 function Card(data){
   this.suit = data['suit'];
@@ -50,7 +50,7 @@ function Card(data){
       code += 'D';
     } else if (this.face=='K'){
       code += 'E';
-    {
+    else {
       code += this.playValue;
     }
     code += ';';
@@ -242,4 +242,4 @@ function startNewGame(){
     console.debug(data);
     setScores(data['score'], data['opponentScore']);
   })
-}
+};
