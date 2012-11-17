@@ -271,12 +271,12 @@ function newScoring(){
         score += 2;
       }
     }else if(combo.length>2){
-      var sorted = combo.sort(function(card){
-        console.log(card.toString())
+      combo.sort(function(card){
+        console.log(card.toString()+'-'+card.index)
         return card.index;
       });
-      printCards(sorted);
-      if(isRun(sorted)){
+      printCards(combo);
+      if(isRun(combo)){
         console.log('Run found!');
       }
     }
