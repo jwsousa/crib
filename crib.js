@@ -69,6 +69,8 @@ exports.Game = function(io){
     this.opponent[this.player] = this.dealer
 
     this.newHand();
+    this.pushHand(this.dealer);
+    this.pushHand(this.player);
   }
   this.addCrib = function(socketId, cardIndices){
     var role = this.roles[socketId];
@@ -164,24 +166,25 @@ exports.Game = function(io){
     this.emitToRoom('new hand ready');
 
     this.switchPlayers();
+
     this.newHand();
+
+    this.sockets[this.dealer].once('start next hand', function(){
+      this.pushHand(this.dealer);
+    });
+    this.sockets[this.player].once('start next hand', function(){
+      this.pushHand(this.player);
+    });
   }
   this.switchPlayers = function(){
     var currentDealer = this.dealer;
     var currentPlayer = this.player;
-    setDealer(player);
-    setPlayer(dealer);
+    setDealer(currentPlayer);
+    setPlayer(currentDealer);
   }
   this.newHand = function(){
     this.deck = exports.makeDeck();
     this.cards = exports.makeCardSets(this.deck);
-
-    this.pushHand(this.dealer);
-    this.pushHand(this.player);
-
-    this.requestCrib(this.dealer);
-    this.requestCrib(this.player);
-
   }
   this.sendScores = function(){
     this.sockets[this.dealer].emit('set scores', {'score': this.scores[this.dealer],
@@ -196,9 +199,13 @@ exports.Game = function(io){
     this.io.sockets.in(this.name).emit(event, data);
   }
   this.pushHand = function(socketId){
+    var cards = this.cards[this.roles[socketId]];
     this.sockets[socketId].emit('set cards',
       {'section': 'hand',
-       'cards': this.cards[this.roles[socketId]]});
+       'cards': cards});
+    if(cards.length==6){
+      this.requestCrib(socketId);
+    }
   }
   this.setAllUnflipped = function(socketId){
     var socket = this.sockets[socketId];
