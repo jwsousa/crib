@@ -114,7 +114,7 @@ exports.Game = function(io){
   this.cardPlayed = function(socketId, cardIndex){
     var role = this.roles[socketId];
     var card = this.cards[role][cardIndex];
-    if(this.playCount + card['score'] > 31){
+    if(this.playCount + card['playValue'] > 31){
       this.requestCard(socketId);
       return;
     }
@@ -128,7 +128,7 @@ exports.Game = function(io){
     this.sockets[opponent].emit('set card', {'section':
                                             'otherhand', 'index': cardIndex,
                                             'card': this.cards[role][cardIndex]});
-    this.setPlayCount(this.playCount + card['score']);
+    this.setPlayCount(this.playCount + card['playValue']);
 
     this.addScore(socketId, this.checkPlayScore());
     this.requestNextCard(socketId);
@@ -156,7 +156,7 @@ exports.Game = function(io){
     function nLastThanConsecutive(n){
       var sorted = playCards.slice(playCards.length-n,playCards.length).sort();
       for(var i=1;i<n;i++){
-        if(sorted[0]!=sorted[i]-i){
+        if(sorted[0].index!=sorted[i].index-i){
           return false;
         }
       }
@@ -324,23 +324,19 @@ exports.cardFromDeckIndex = function(index){
   }else if (index%4 == 3){
     suit = 'S';
   }
-
-  var score = index%13;
+  var index = index%13;
+  var playValue = Math.max(index+1, 10);
   var face = score;
-
-  if (score === 0){
-    score = 10;
+  if (index == 0){
+    face = 'A';
+  }else if (score == 9){
     face = 'J';
-  }if (score == 11){
-    score = 10;
+  }else if (score == 11){
     face = 'Q';
-  }if (score == 12){
-    score = 10;
-    face = 'K';
-  }if (score == 1){
-    face = 'A'
+  }else if (score == 12){
+    face = 'K'
   }
-  var card = {'suit': suit, 'face': face, 'score': score};
+  var card = {'suit': suit, 'face': face, 'playValue': playValue, 'index': index};
   card.toString = function(){
     return 'Card[' + this.suit + this.face + ']';
   }
