@@ -403,18 +403,18 @@ exports.makeCardSets = function(deck) {
 exports.scoreHand = function(hand, flip, isCrib){
   var fullHand = hand.slice(0).push(flip);
   var score = 0;
-  var combos = combinations(fullHand);
+  var combos = exports.combinations(fullHand);
   var runs = [];
   for (var i=0;i<combos.length;i++) {
     var combo = combos[i];
-    var cardSum = addCardSum(combo);
+    var cardSum = exports.addCardSum(combo);
     if(cardSum==15){
       score += 2;
     }
     if(combo.length==2 && combo[0].face == combo[1].face){
       score += 2;
     }else if(combo.length>2){
-      if(isRun(combo)){
+      if(exports.isRun(combo)){
         runs.push(combo.length);
       }
     }
@@ -425,7 +425,7 @@ exports.scoreHand = function(hand, flip, isCrib){
       score += runs[i];
     }
   }
-  if(isFlush(hand)){
+  if(exports.isFlush(hand)){
     score += 4;
     if(!isCrib && flip.suit == hard[0].suit){
       score += 1;
