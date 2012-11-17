@@ -271,9 +271,7 @@ function newScoring(){
         score += 2;
       }
     }
-    console.log(combo);
-    console.log(combo[0]);
-    console.log(combo[0].toString());
+    printCards.log(combo);
     if(isRun(combo)){
       console.log('Run found!');
 
