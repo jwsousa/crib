@@ -325,7 +325,7 @@ exports.cardFromDeckIndex = function(index){
     suit = 'S';
   }
   var index = index%13;
-  var playValue = Math.max(index+1, 10);
+  var playValue = Math.min(index+1, 10);
   var face = index+1;
   if (index == 0){
     face = 'A';
