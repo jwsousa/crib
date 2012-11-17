@@ -271,9 +271,8 @@ function newScoring(){
         score += 2;
       }
     }else if(combo.length>2){
-      combo.sort(function(card){
-        console.log(card.toString()+'-'+card.index)
-        return card.index;
+      combo.sort(function(card1, card2){
+        return card2.index - card1.index;
       });
       printCards(combo);
       if(isRun(combo)){
@@ -297,6 +296,7 @@ isRun = function(cards){
     return false;
   }
   var sorted = cards.sort(function(card1, card2){
+
     return card2.index - card1.index;
   });
   for(var i=1;i<cards.length;i++){
