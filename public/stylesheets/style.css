@@ -12,7 +12,7 @@
   border-color:black;
 }
 .cards {
-  margin: 10px 15px 30px 15px;
+  margin: 10px 15px 10px 15px;
   /*height: 60px;*/
 }
 .game {
@@ -76,5 +76,8 @@
 
 #numbers.section div {
   display: inline-block;
-  padding: 5px 0px;
+  padding: 0px 20px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
 }
