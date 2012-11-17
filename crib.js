@@ -196,7 +196,7 @@ exports.Game = function(io){
   this.requestCrib = function(socketId){
     var game = this;
     this.requestCards(socketId, 2, function (cards) {
-      game.addCrib(socketId, cards);
+      game.addCrib(this.role[socketId], cards);
     });
   }
   this.requestCard = function(socketId){
