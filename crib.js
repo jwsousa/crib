@@ -326,14 +326,14 @@ exports.cardFromDeckIndex = function(index){
   }
   var index = index%13;
   var playValue = Math.max(index+1, 10);
-  var face = playValue;
-  if (index == 0){
+  var face = index+1;
+  if (face == 0){
     face = 'A';
-  }else if (index == 9){
+  }else if (face == 9){
     face = 'J';
-  }else if (index == 11){
+  }else if (face == 11){
     face = 'Q';
-  }else if (index == 12){
+  }else if (face == 12){
     face = 'K'
   }
   var card = {'suit': suit, 'face': face, 'playValue': playValue, 'index': index};
