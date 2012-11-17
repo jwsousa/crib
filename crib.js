@@ -172,8 +172,9 @@ exports.Game = function(io){
     this.sockets[this.dealer].once('start next hand', function(){
       this.pushHand(this.dealer);
     });
+    var game = this;
     this.sockets[this.player].once('start next hand', function(){
-      this.pushHand(this.player);
+      game.pushHand(this.player);
     });
   }
   this.switchPlayers = function(){
