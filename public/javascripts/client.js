@@ -56,8 +56,9 @@ function Card(data){
     } else {
       code += this.playValue;
     }
-    // code += ' ' + code + ' ' + this.playValue + ' ' + this.face + ' ' + this.index;
-    code = '&#x1F0' + code + ';';
+    code += ';';
+    code += ' ' + code + ' ' + this.playValue + ' ' + this.face + ' ' + this.index;
+    code = '&#x1F0' + code;
     return code;
   }
 
