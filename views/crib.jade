@@ -2,13 +2,14 @@ extends layout
 
 block content
   h1#header Cribbage by CS productions
-  h2.message Welcome
+  h2#topmessage.message Welcome
   .game
     #otherhand.section
       h3 Other Player's Hand:
       .cards
     #numbers.section
       #count
+    #opponentscore
     #flipcrib.section
       #flip
         .cards
@@ -16,11 +17,12 @@ block content
         .cards
     #play.section
       .cards
+    #score
     #hand.section
       h3 My Hand:
       .cards
 
-  b.message
+  #bottommessage.message
   br
   a#newGame.button(onClick='startNewGame();') Start New Game
   script
