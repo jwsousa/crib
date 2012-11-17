@@ -216,9 +216,16 @@ exports.Game = function(io){
   }
   this.handOver = function(){
     this.emitToRoom('set cards', {'section': 'crib',
-                                       'cards': this.cards['crib']});
+                                  'cards': this.cards['crib']});
     this.emitToRoom('enable all');
     this.emitToRoom('new hand ready');
+
+    var dealerHandScore = exports.scoreHand(this.cards['dealer'], this.cards['flip'][0], false);
+    var playerHandScore = exports.scoreHand(this.cards['player'], this.cards['flip'][0], false);
+    var cribHandScore = exports.scoreHand(this.cards['crib'], this.cards['flip'][0], true);
+    addScore(this.player, playerHandScore);
+    addScore(this.dealer, dealerHandScore);
+    addScore(this.dealer, cribHandScore);
 
     this.switchPlayers();
     this.newHand();
@@ -393,14 +400,44 @@ exports.makeCardSets = function(deck) {
 }
 
 
-exports.scoreHand = function(){
-
+exports.scoreHand = function(hand, flip, isCrib){
+  var fullHand = hand.slice(0).push(flip);
+  var score = 0;
+  var combos = combinations(fullHand);
+  var runs = [];
+  for (var i=0;i<combos.length;i++) {
+    var combo = combos[i];
+    var cardSum = addCardSum(combo);
+    if(cardSum==15){
+      score += 2;
+    }
+    if(combo.length==2 && combo[0].face == combo[1].face){
+      score += 2;
+    }else if(combo.length>2){
+      if(isRun(combo)){
+        runs.push(combo.length);
+      }
+    }
+  }
+  runs.sort().reverse();
+  for (var i=0;i<runs.length;i++) {
+    if(runs[0]==runs[i]){
+      score += runs[i];
+    }
+  }
+  if(isFlush(hand)){
+    score += 4;
+    if(!isCrib && flip.suit == hard[0].suit){
+      score += 1;
+    }
+  }
+  return score;
 }
-exports.combinations = function(hand) {
-  var fn = function(n, hand, got, all) {
+exports.combinations = function(cards) {
+  var fn = function(n, src, got, all) {
     if (n == 0) {
       if (got.length > 0) {
-        all.push[all.length] = got;
+        all[all.length] = got;
       }
       return;
     }
@@ -410,9 +447,41 @@ exports.combinations = function(hand) {
     return;
   }
   var all = [];
-  for (var i = 0; i < hand.length; i++) {
-    fn(i, hand, [], all);
+  for (var i = 0; i < cards.length; i++) {
+    fn(i, cards, [], all);
   }
-  all.push(hand);
+  all.push(cards);
   return all;
+}
+exports.addCardSum = function(cards){
+  var total = 0;
+  for(var cardIndex=0;cardIndex<cards.length;cardIndex++){
+    total += cards[cardIndex].playValue;
+  }
+  return total;
+}
+exports.isFlush = function(cards){
+  var suit = cards[0].suit;
+  var flushLenth = 1;
+  for(var i=1;i<cards.length;i++){
+    if(cards[i].suit == suit){
+      flushLenth += 1;
+    }
+  }
+  return flushLenth;
+}
+exports.isRun = function(cards){
+  if(cards.length<3){
+    return false;
+  }
+  sorted = cards.slice(0).sort(exports.cardCompare);
+  for(var i=1;i<cards.length;i++){
+    if(sorted[0].index!=sorted[i].index-i){
+      return false;
+    }
+  }
+  return true;
+}
+exports.cardCompare = function(card1, card2){
+  return card1.index - card2.index;
 }
