@@ -253,11 +253,27 @@ function newScoring(){
   console.log('New scoring!');
   var deck = makeDeck();
   var hand = deck.slice(0,5);
+  var score = 0;
   console.debug(hand);
   setCardsOnPage('hand', hand);
 
   var combos = combinations(hand);
   console.debug(combos);
+  for (var i=0;i<combos.length;i++) {
+    var cardSum = addCardSum(combos[i]);
+    if(cardSum==15){
+      socre += 2;
+    }
+  };
+  $('.message').html(score);
+}
+
+function addCardSum(cards){
+  var total = 0;
+  for(var cardIndex=0;cardIndex<cards.length;cardIndex++){
+    total += cards[cardIndex].playValue;
+  }
+  return total;
 }
 
 cardFromDeckIndex = function(index){
