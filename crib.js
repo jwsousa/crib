@@ -143,14 +143,18 @@ exports.Game = function(io){
     this.requestNextCard(nextCardPlayer);
   }
   this.canPlay = function(playerName){
-    console.log('Checking if ' + playerName + ' can play. ' + this.cards[playerName] + ' ' + this.playedCards[playerName]);
-    for(var i=0;i<this.cards[playerName].length;i++){
-      var card = this.cards[playerName][i];
+    console.log('Checking if ' + playerName + ' can play. ');
+    var cards = this.cards[playerName];
+    console.log(cards);
+    var playedCards = this.playedCards[playerName];
+    console.log(playedCards);
+
+    for(var card in cards) {
       console.log('Has card been played?: ' + card);
-      if(this.playedCards[playerName].indexOf(card) == -1){
-        if(card.score + this.playCount <= 31){
-          return true;
-        }
+      var cardNotPlayed = playedCards.indexOf(card) == -1;
+      console.log('   ' + cardNotPlayed);
+      if(cardNotPlayed && card.score + this.playCount <= 31){
+        return true;
       }
     }
     return false;
