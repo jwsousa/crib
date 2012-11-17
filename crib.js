@@ -149,14 +149,17 @@ exports.Game = function(io){
     var playedCards = this.playedCards[playerName];
     console.log(playedCards);
 
-    for(var card in cards) {
+    for(var cardIndex in cards) {
+      var card = cards[cardIndex];
       console.log('Has card been played?: ' + card);
       var cardNotPlayed = playedCards.indexOf(card) == -1;
       console.log('   ' + cardNotPlayed);
       if(cardNotPlayed && card.score + this.playCount <= 31){
+        console.log('returning true!!\n')
         return true;
       }
     }
+    console.log('returning false!!\n')
     return false;
   }
   this.showAll = function(){
