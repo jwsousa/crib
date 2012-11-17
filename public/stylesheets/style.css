@@ -76,4 +76,5 @@
 
 #numbers.section div {
   display: inline-block;
+  padding: 5px 0px;
 }
