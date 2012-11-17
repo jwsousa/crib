@@ -427,7 +427,7 @@ exports.scoreHand = function(hand, flip, isCrib){
   }
   if(exports.isFlush(hand)){
     score += 4;
-    if(!isCrib && flip.suit == hard[0].suit){
+    if(!isCrib && flip.suit == hand[0].suit){
       score += 1;
     }
   }
