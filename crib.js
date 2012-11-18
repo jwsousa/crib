@@ -49,38 +49,54 @@ exports.Game = function(io){
     this.scores[socket.id] = 0;
     socket.join(this.name);
     this.resetHand(socket.id);
-    this.sockets[socket.id].emit('set scores', {'score': 0,
-                                                'opponentScore': 0});
+    this.emit(socket.id, 'set scores', {'score': 0,
+                                        'opponentScore': 0});
     if(this.playerCount==1){
       this.setDealer(socket.id);
-      this.sockets[this.dealer].send('You are the dealer. Please wait for a second player and the cards will be dealt.')
+      this.send(this.dealer, 'You are the dealer. Please wait for a second player and the cards will be dealt.')
     }else if(this.playerCount==2){
       this.setPlayer(socket.id);
-      this.sockets[this.player].send('You are NOT the dealer.');
-      this.sockets[this.dealer].send('You are the dealer.');
       this.startGame();
     }
   }
   this.startGame = function(){
+    this.send(this.player, 'You are NOT the dealer. ' + this.player);
+    this.send(this.dealer, 'You are the dealer. ' + this.dealer);
+
     this.opponent[this.dealer] = this.player
     this.opponent[this.player] = this.dealer
 
     this.pushHand(this.dealer);
     this.pushHand(this.player);
   }
+  this.send = function(socketId, message){
+    this.sockets[socketId].send(message);
+  }
+  this.sendToOpponent = function(socketId, message){
+    socketId = this.opponent[socketId];
+    this.send(socketId, message);
+  }
+  this.emit = function(socketId, event, data){
+    this.sockets[socketId].emit(event, data);
+  }
+  this.emitToOpponent = function(socketId, event, data){
+    socketId = this.opponent[socketId];
+    this.emit(socketId, event, data);
+  }
   this.addCrib = function(socketId, cardIndices){
     var role = this.roles[socketId];
     var crib = this.cards['crib'];
     var hand = this.cards[role];
-    crib.push(hand.splice(cardIndices[0], 1)[0]);
-    crib.push(hand.splice(cardIndices[1]-1, 1)[0]);
-    this.pushHand(socketId);
-    this.sockets[this.opponent[socketId]].emit('set unflipped', {'section': 'otherhand',
-                                                                'number': 4});
-    this.emitToRoom('set unflipped', {'section': 'crib',
-                                      'number': crib.length});
+    cardIndices.sort(); // Ensure cards indices to remove are sorted.
 
-    if (crib.length == 4){
+    crib.add(hand.remove(cardIndices[0]));
+    crib.add(hand.remove(cardIndices[1]-1));
+    this.pushHand(socketId);
+    this.emitToOpponent(socketId, 'set unflipped', {'section': 'otherhand',
+                                                    'number': 4});
+    this.emitToRoom('set unflipped', {'section': 'crib',
+                                      'number': crib.length()});
+    if (crib.length() == 4){
       this.cribComplete();
     }
   }
@@ -92,6 +108,7 @@ exports.Game = function(io){
   this.startPlay = function(){
     this.setPlayCount(0);
     this.playedCards = {'dealer':[], 'player':[], 'play':[]}
+    console.log('Requesting 1st card from: ' + this.player)
     this.requestCard(this.player);
   }
   this.setPlayCount = function(count){
@@ -101,7 +118,7 @@ exports.Game = function(io){
   this.addScore = function(socketId, score){
     if(score<1)
       return;
-    console.log('Adding: ' + score);
+    console.log(socketId + ': Adding ' + score);
     this.scores[socketId] = Math.min(this.scores[socketId] + score, 121);
     this.sendScores();
     if(this.scores[socketId] == 121) {
@@ -109,67 +126,68 @@ exports.Game = function(io){
     }
   }
   this.gameWon = function(socketId){
-      this.sockets[socketId].send("You've won!");
-      this.sockets[this.opponent[socketId]].send("You've lost!");
+    this.send(socketId, "You've won!");
+    this.sendToOpponent(socketId, "You've lost!");
   }
   this.cardPlayed = function(socketId, cardIndex){
     var role = this.roles[socketId];
-    var card = this.cards[role][cardIndex];
+    var card = this.cards[role].get(cardIndex);
     if(this.playCount + card['playValue'] > 31){
       this.requestCard(socketId);
       return;
     }
     this.playedCards[role].push(card);
     this.playedCards['play'].unshift(card);
-    var opponent = this.opponent[socketId];
-    this.sockets[socketId].emit('set disabled', {'section': 'hand',
-                                                 'index': cardIndex});
-    this.sockets[opponent].emit('set disabled', {'section': 'otherhand',
-                                                'index': cardIndex});
-    this.sockets[opponent].emit('set card', {'section':
-                                            'otherhand', 'index': cardIndex,
-                                            'card': this.cards[role][cardIndex]});
-    this.setPlayCount(this.playCount + card['playValue']);
 
+    var card = this.cards[role].get(cardIndex);
+    var playNumber = this.playedCards[role].length
+
+    this.emit(socketId, 'set disabled', {'section': 'hand',
+                                         'index': cardIndex});
+    this.emitToOpponent(socketId, 'set disabled', {'section': 'otherhand',
+                                                   'index': cardIndex});
+    this.emitToOpponent(socketId, 'set card', {'section': 'otherhand',
+                                               'index': cardIndex,
+                                               'card': card});
+    this.emitToOpponent(socketId, 'set play number', {'section': 'otherhand',
+                                                      'index': cardIndex,
+                                                      'playNumber': playNumber});
+    this.emit(socketId, 'set play number', {'section': 'hand',
+                                            'index': cardIndex,
+                                            'playNumber': playNumber});
+    this.setPlayCount(this.playCount + card['playValue']);
     this.addScore(socketId, this.checkPlayScore());
     this.requestNextCard(socketId);
   }
   this.checkPlayScore = function(){
     var score = 0;
     var playCards = this.playedCards['play'];
+    console.log('Checking play score for ' + exports.cardsToString(playCards));
     if(this.playCount==15){
-      console.log('Hit 15: +2');
+      console.log('15 for +2');
       score += 2;
     }
-    if(playCards > 1 && playCards[0].face == playCards[1].face){
-      console.log('Pair: +2');
+    if(playCards.length > 1 && playCards[0].face == playCards[1].face){
+      console.log('Pair for 2');
       score += 2;
+      if(playCards.length > 2 && playCards[0].face == playCards[2].face){
+        console.log('Royal Pair for 4 more');
+        score += 4;
+        if(playCards.length > 3 && playCards[0].face == playCards[3].face){
+          console.log('4 of a kind for 6 more');
+          score += 6;
+        }
+      }
     }
-    if(playCards > 2 && playCards[0].face == playCards[2].face){
-      console.log('Royal Pair: +4');
-      score += 4;
-    }
-    if(playCards > 3 && playCards[0].face == playCards[3].face){
-      console.log('4 of a Kind: +12');
-      score += 6;
-    }
-    score += this.checkLastRun()
+    score += this.checkLastRun();
     return score;
   }
   this.checkLastRun = function(){
     var playCards = this.playedCards['play'];
-    function nLastThanConsecutive(n){
-      var sorted = playCards.slice(playCards.length-n,playCards.length).sort(exports.cardCompare);
-      for(var i=1;i<n;i++){
-        if(sorted[0].index!=sorted[i].index-i){
-          return false;
-        }
-      }
-      return true;
-    };
     for(var n=playCards.length;n>2;n--){
-      if(nLastThanConsecutive(n)){
-        console.log('Run: +'+n);
+      var lastNCards = playCards.slice(0, n);
+      if(exports.isRun(lastNCards)){
+        // console.log('Run for ' + n);
         return n;
       }
     }
@@ -177,36 +195,38 @@ exports.Game = function(io){
   }
   this.requestNextCard = function(lastCardPlayer){
     if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
+      console.log('Last card for one')
       this.addScore(lastCardPlayer, 1);
       this.handOver();
       return
     }
-    var lastCardPlayerRole = this.roles[lastCardPlayer];
     var nextCardPlayer = this.opponent[lastCardPlayer];
-    var nextCardPlayerRole = this.roles[nextCardPlayer];
-    if(this.canPlay(nextCardPlayerRole)) {
+    if(this.canPlay(nextCardPlayer)) {
       this.requestCard(nextCardPlayer);
       return;
     }
-    if(this.canPlay(lastCardPlayerRole)) {
+    if(this.canPlay(lastCardPlayer)) {
+      this.addScore(lastCardPlayer, 1);
       this.requestCard(lastCardPlayer);
       return;
     }
     if(this.playCount == 31){
+      console.log('31 for 2')
       this.addScore(lastCardPlayer, 2);
     }else{
+      console.log('Go for 1');
       this.addScore(lastCardPlayer, 1);
     }
     this.playedCards['play'] = [];
     this.setPlayCount(0);
     this.requestCard(nextCardPlayer);
   }
-  this.canPlay = function(playerName){
-    var cards = this.cards[playerName];
-    var playedCards = this.playedCards[playerName];
-
-    for(var cardIndex in cards) {
-      var card = cards[cardIndex];
+  this.canPlay = function(socketId){
+    var role = this.roles[socketId];
+    var cards = this.cards[role];
+    var playedCards = this.playedCards[role];
+    for(var i=0;i<cards.length();i++) {
+      var card = cards.get(i);
       var cardNotPlayed = playedCards.indexOf(card) == -1;
       if(cardNotPlayed && card.playValue + this.playCount <= 31){
         return true;
@@ -216,16 +236,18 @@ exports.Game = function(io){
   }
   this.handOver = function(){
     this.emitToRoom('set cards', {'section': 'crib',
-                                  'cards': this.cards['crib']});
+                                  'cards': this.cards['crib'].cards});
     this.emitToRoom('enable all');
     this.emitToRoom('new hand ready');
+    this.emitToRoom('set count', {'count': -1});
 
-    var dealerHandScore = exports.scoreHand(this.cards['dealer'], this.cards['flip'][0], false);
-    var playerHandScore = exports.scoreHand(this.cards['player'], this.cards['flip'][0], false);
-    var cribHandScore = exports.scoreHand(this.cards['crib'], this.cards['flip'][0], true);
-    addScore(this.player, playerHandScore);
-    addScore(this.dealer, dealerHandScore);
-    addScore(this.dealer, cribHandScore);
+    this.cards['player'].flip(this.cards['flip']);
+    this.cards['crib'].flip(this.cards['flip']);
+    this.cards['dealer'].flip(this.cards['flip']);
+
+    this.addScore(this.player, exports.scoreHand(this.cards['player'], false));
+    this.addScore(this.dealer, exports.scoreHand(this.cards['dealer'], false));
+    this.addScore(this.dealer, exports.scoreHand(this.cards['crib'], true));
 
     this.switchPlayers();
     this.newHand();
@@ -234,10 +256,12 @@ exports.Game = function(io){
     this.sockets[this.dealer].once('start next hand', function(){
       game.resetHand(game.dealer);
       game.pushHand(game.dealer);
+      game.send(game.dealer, 'You are the dealer. ' + game.dealer);
     });
     this.sockets[this.player].once('start next hand', function(){
       game.resetHand(game.player);
       game.pushHand(game.player);
+      game.send(game.player, 'You are NOT the dealer. ' + game.player);
     });
   }
   this.switchPlayers = function(){
@@ -251,10 +275,10 @@ exports.Game = function(io){
     this.cards = exports.makeCardSets(this.deck);
   }
   this.sendScores = function(){
-    this.sockets[this.dealer].emit('set scores', {'score': this.scores[this.dealer],
-                                                  'opponentScore': this.scores[this.player]});
-    this.sockets[this.player].emit('set scores', {'score': this.scores[this.player],
-                                                  'opponentScore': this.scores[this.dealer]});
+    this.emit(this.dealer, 'set scores', {'score': this.scores[this.dealer],
+                                          'opponentScore': this.scores[this.player]});
+    this.emit(this.player, 'set scores', {'score': this.scores[this.player],
+                                          'opponentScore': this.scores[this.dealer]});
   }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);
@@ -264,32 +288,37 @@ exports.Game = function(io){
   }
   this.pushHand = function(socketId){
     var cards = this.cards[this.roles[socketId]];
-    this.sockets[socketId].emit('set cards',
-      {'section': 'hand',
-       'cards': cards});
-    if(cards.length==6){
+    this.emit(socketId, 'set cards', {'section': 'hand',
+                                      'cards': cards.cards});
+    console.log('Sending ' + cards.length() + ' cards to  ' + socketId);
+    if(cards.length()==6){
+      console.log('Requesting crib from ' + socketId);
       this.requestCrib(socketId);
     }
   }
   this.resetHand = function(socketId){
-    var socket = this.sockets[socketId];
-    socket.emit('set cards',{'section': 'crib', 'cards': []});
-    socket.emit('set unflipped', {'section': 'crib',
-                                  'number': this.cards['crib'].length});
-    socket.emit('set count',{'count': -1});
-    socket.emit('set unflipped', {'section': 'flip',
-                                  'number': 1});
-    socket.emit('set unflipped', {'section': 'hand',
-                                  'number': 6});
-    socket.emit('set unflipped', {'section': 'otherhand',
-                                  'number': 6-this.cards['crib'].length});
+    this.emit(socketId, 'set cards', {'section': 'crib', 'cards': []});
+    this.emit(socketId, 'set unflipped', {'section': 'crib',
+                                          'number': this.cards['crib'].length()});
+    this.emit(socketId, 'set count', {'count': -1});
+    this.emit(socketId, 'set unflipped', {'section': 'flip',
+                                          'number': 1});
+    this.emit(socketId, 'set unflipped', {'section': 'hand',
+                                          'number': 6});
+    this.emit(socketId, 'set unflipped', {'section': 'otherhand',
+                                          'number': 6-this.cards['crib'].length()});
   }
   this.setCribUnflipped = function(){
     this.emitToRoom('set unflipped', {'section': 'crib', 'number': 4});
   }
   this.showFlip = function(){
-    this.emitToRoom('set cards', {'section': 'flip',
-                                  'cards': this.cards['flip']});
+    this.emitToRoom('set card', {'section': 'flip',
+                                 'index': 0,
+                                 'card': this.cards['flip']});
+    if(this.cards['flip'].face == 'J'){
+      this.addScore(this.dealer, 2);
+    }
+
   }
   this.requestCards = function(socketId, number, callback){
     var game = this;
@@ -299,9 +328,9 @@ exports.Game = function(io){
       });
       return callback(cardIndices);
     });
-    this.sockets[socketId].emit('need cards', {'role': this.roles[socketId],
-                                               'game': this.name,
-                                               'number': number});
+    this.emit(socketId, 'need cards', {'role': this.roles[socketId],
+                                       'game': this.name,
+                                       'number': number});
   }
   this.requestCrib = function(socketId){
     var game = this;
@@ -353,12 +382,19 @@ exports.cardFromDeckIndex = function(index){
   }
   var card = {'suit': suit, 'face': face, 'playValue': playValue, 'index': index};
   card.toString = function(){
-    return 'Card[' + this.suit + this.face + ']';
+    return '(' + this.suit + this.face + ')';
   }
   return card;
 }
 
+exports.cardsToString = function(cards){
+  var s = 'Cards[' + cards[0].toString();
+  for(var i=1;i<cards.length;i++){
+    s += ', ' + cards[i].toString();
+  }
+  return s + ']';
 
+}
 // exports.printDeck = function(deck){
 //   console.log('Deck:');
 //   for (var i=0;i<52;i++){
@@ -392,42 +428,123 @@ exports.shuffleDeck = function(deck) {
 
 exports.makeCardSets = function(deck) {
   return {
-    'flip': deck.slice(0,1),
-    'dealer': deck.slice(1,7),
-    'player': deck.slice(7,13),
-    'crib': []
+    'flip': deck[0],
+    'dealer': new exports.Hand(deck.slice(1,7)),
+    'player': new exports.Hand(deck.slice(7,13)),
+    'crib': new exports.Hand([], true)
   };
 }
 
+exports.Hand = function(cards, isCrib){
+  this.cards = cards;
+  this.cards.sort(exports.cardCompare);
+  this._flip = null;
+  this.isCrib = typeof isCrib !== 'undefined' ? isCrib : false;
+  this._fullHand = null;
 
-exports.scoreHand = function(hand, flip, isCrib){
-  var fullHand = hand.slice(0).push(flip);
+  this.flip = function(flip){
+    this._fullHand = null;
+    this._flip = flip;
+  }
+  this.length = function(){
+    return this.fullHand().length;
+  }
+  this.get = function(index){
+    return this.fullHand()[index];
+  }
+  this.remove = function(index){
+    this._fullHand = null;
+    return this.cards.splice(index, 1)[0];
+  }
+  this.add = function(card){
+    this._fullHand = null;
+    this.cards.push(card);
+    this.cards.sort(exports.cardCompare);
+  }
+  this.fullHand = function(){
+    if(this._fullHand!==null){
+      return this._fullHand;
+    }
+    if(this._flip===null){
+      return this.cards;
+    }
+    this._fullHand = this.cards.slice(0)
+    this._fullHand.push(this._flip);
+    this._fullHand.sort(exports.cardCompare);
+    return this._fullHand;
+  }
+  this.toString = function(){
+    if(this.isCrib){
+      var s = 'Crib';
+    }else{
+      var s = 'Hand';
+    }
+    s += '[' + this.cards[0].toString();
+    for(var i=1;i<this.cards.length;i++){
+      s += ',' + this.cards[i].toString();
+    }
+    if(this._flip){
+      s += ' Flip:' + this._flip.toString();
+    }
+    return s + ']';
+  }
+
+}
+
+exports.scoreHand = function(hand){
   var score = 0;
-  var combos = exports.combinations(fullHand);
-  var runs = [];
+  var runs = []; // Lengths of detected runs (3, 4 or 5).
+  console.log('Scoring: ' + hand.toString());
+  // Look at all possible combinations of cards.
+  var combos = exports.combinations(hand.fullHand());
+  // console.log(combos.length + ' combos')
   for (var i=0;i<combos.length;i++) {
     var combo = combos[i];
-    var cardSum = exports.addCardSum(combo);
+    var cardSum = exports.addCardSum(combo); // Sum of play values for hards in combo.
+    // Check for 15s.
     if(cardSum==15){
-      score += 2;
+      console.log('-15 for 2');
+      score += 2; //+2 for any 15.
     }
+    // Check for pairs.
     if(combo.length==2 && combo[0].face == combo[1].face){
-      score += 2;
+      console.log('-Pair for 2');
+      score += 2;//+2 for any pair. Will automatically find 3/4 of a kinds.
     }else if(combo.length>2){
+      // Combos larger than 2 may contain a run.
       if(exports.isRun(combo)){
+        // console.log('Run of ' + combo.length + ' (this run)');
         runs.push(combo.length);
       }
     }
   }
   runs.sort().reverse();
+  // Runs array is now in reverse sorted order. For example :
+  // if the hand was a double run of 4 it would look like [4, 4, 3, 3].
   for (var i=0;i<runs.length;i++) {
     if(runs[0]==runs[i]){
+      // Add to score the length of any runs that are as long as the longest run.
+      console.log('-Run for ' + runs[i]);
       score += runs[i];
     }
   }
-  if(exports.isFlush(hand)){
-    score += 4;
-    if(!isCrib && flip.suit == hand[0].suit){
+  // Check for flushes.
+  if(exports.isFlush(hand.cards)){
+    var flipMatches = hand.flip.suit == hand.cards[0].suit;
+    if(flipMatches){
+      // +5 for 5 card flush.
+      console.log('-Flush for 5');
+      score += 5;
+    } else if(!hand.isCrib){
+      // +4 for 4 card flush if this is not the crib.
+      console.log('-Flush for 4');
+      score += 4;
+    }
+  }
+  //Check for his nobs.
+  for(var i=0;i<hand.cards.length;i++){
+    if(hand.cards[i].face == 'J' && hand.cards[i].suit == hand.flip.suit){
+      console.log('-His nobs for 1');
       score += 1;
     }
   }
@@ -461,22 +578,21 @@ exports.addCardSum = function(cards){
   return total;
 }
 exports.isFlush = function(cards){
-  var suit = cards[0].suit;
-  var flushLenth = 1;
   for(var i=1;i<cards.length;i++){
-    if(cards[i].suit == suit){
-      flushLenth += 1;
+    if(cards[i].suit != cards[0].suit){
+      return false;
     }
   }
-  return flushLenth;
+  return true;
 }
 exports.isRun = function(cards){
   if(cards.length<3){
     return false;
   }
-  sorted = cards.slice(0).sort(exports.cardCompare);
+  cards = cards.slice(0);
+  cards.sort(exports.cardCompare);
   for(var i=1;i<cards.length;i++){
-    if(sorted[0].index!=sorted[i].index-i){
+    if(cards[0].index!=cards[i].index-i){
       return false;
     }
   }

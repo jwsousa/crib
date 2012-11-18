@@ -71,13 +71,21 @@ function Card(data){
   }
 }
 
+function setPlayNumber(section, index, playNumber){
+  var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  if(section == 'hand'){
+    cardDiv.css('margin-bottom', 10*playNumber);
+  } else {
+    cardDiv.css('margin-top', 10*playNumber);
+  }
+}
+
 function setCard(section, index, cardData){
   var cardDiv = $('#' + section + ' .cards .card#card' + index);
   var card = new Card(cardData);
   cardDiv.html(card.htmlCode());
   cardDiv.addClass(card.suit);
   cardDiv.addClass('flipped');
-
 }
 
 function setCardsOnPage(section, cards){
@@ -212,6 +220,9 @@ function startNewGame(){
     console.debug('set unflipped received:');
     console.debug(data);
     setUnflipped(data['section'], data['number']);
+    if(data['section'] == 'hand'){
+      $('#newHand.button').addClass('hidden');
+    }
   });
 
   socket.on('set disabled', function(data) {
@@ -245,7 +256,13 @@ function startNewGame(){
     console.debug('set scores received:');
     console.debug(data);
     setScores(data['score'], data['opponentScore']);
-  })
+  });
+
+  socket.on('set play number', function(data){
+    console.debug('set play number received:');
+    console.debug(data);
+    setPlayNumber(data['section'], data['index'], data['playNumber']);
+  });
 };
 
 
