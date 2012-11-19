@@ -69,20 +69,6 @@ exports.Game = function(io){
     this.pushHand(this.dealer);
     this.pushHand(this.player);
   }
-  this.send = function(socketId, message){
-    this.sockets[socketId].send(message);
-  }
-  this.sendToOpponent = function(socketId, message){
-    socketId = this.opponent[socketId];
-    this.send(socketId, message);
-  }
-  this.emit = function(socketId, event, data){
-    this.sockets[socketId].emit(event, data);
-  }
-  this.emitToOpponent = function(socketId, event, data){
-    socketId = this.opponent[socketId];
-    this.emit(socketId, event, data);
-  }
   this.addCrib = function(socketId, cardIndices){
     var role = this.roles[socketId];
     var crib = this.cards['crib'];
@@ -245,9 +231,7 @@ exports.Game = function(io){
     this.cards['crib'].flip(this.cards['flip']);
     this.cards['dealer'].flip(this.cards['flip']);
 
-    this.addScore(this.player, exports.scoreHand(this.cards['player'], false));
-    this.addScore(this.dealer, exports.scoreHand(this.cards['dealer'], false));
-    this.addScore(this.dealer, exports.scoreHand(this.cards['crib'], true));
+    this.scoreHands();
 
     this.switchPlayers();
     this.newHand();
@@ -263,6 +247,12 @@ exports.Game = function(io){
       game.pushHand(game.player);
       game.send(game.player, 'You are NOT the dealer. ' + game.player);
     });
+  }
+  this.scoreHands = function(){
+    this.addScore(this.player, this.scoreHand('player'));
+    this.addScore(this.dealer, this.scoreHand('dealer'));
+    this.addScore(this.dealer, this.scoreHand('crib'));
+
   }
   this.switchPlayers = function(){
     var currentDealer = this.dealer;
@@ -280,11 +270,34 @@ exports.Game = function(io){
     this.emit(this.player, 'set scores', {'score': this.scores[this.player],
                                           'opponentScore': this.scores[this.dealer]});
   }
+  this.send = function(socketId, message){
+    this.sockets[socketId].send(message);
+  }
   this.sendToRoom = function(message){
     this.io.sockets.in(this.name).send(message);
   }
+  this.sendToOpponent = function(socketId, message){
+    socketId = this.opponent[socketId];
+    this.send(socketId, message);
+  }
+  this.emit = function(socketId, event, data){
+    this.sockets[socketId].emit(event, data);
+  }
+  this.emitToOpponent = function(socketId, event, data){
+    socketId = this.opponent[socketId];
+    this.emit(socketId, event, data);
+  }
   this.emitToRoom = function(event, data){
     this.io.sockets.in(this.name).emit(event, data);
+  }
+  this.emitToSections = function(socketId, event, data){
+    data['section'] = 'hand';
+    this.emit(socketId, event, data);
+    data['section'] = 'otherhand';
+    this.emitToOpponent(socketId, event, data);
+  }
+  this.messageToSections = function(socketId, message){
+    this.emitToSections(socketId, 'add message', {'message': message});
   }
   this.pushHand = function(socketId){
     var cards = this.cards[this.roles[socketId]];
@@ -352,6 +365,70 @@ exports.Game = function(io){
       // this.sockets[socketId].disconnect();
     }
   }
+  this.scoreHand = function(handName){
+    var isCrib = handName=='crib'
+    var hand = this.cards[handName];
+    var socketId = handName == 'player' ? this.player : this.dealer;
+
+    var score = 0;
+    var runs = []; // Lengths of detected runs (3, 4 or 5).
+    this.messageToSections(socketId, 'Scoring: ' + hand.toString());
+    // Look at all possible combinations of cards.
+    var combos = exports.combinations(hand.fullHand());
+    // console.log(combos.length + ' combos')
+    for (var i=0;i<combos.length;i++) {
+      var combo = combos[i];
+      var cardSum = exports.addCardSum(combo); // Sum of play values for hards in combo.
+      // Check for 15s.
+      if(cardSum==15){
+        this.messageToSections(socketId, '-15 for 2');
+        score += 2; //+2 for any 15.
+      }
+      // Check for pairs.
+      if(combo.length==2 && combo[0].face == combo[1].face){
+        this.messageToSections(socketId, '-Pair for 2');
+        score += 2;//+2 for any pair. Will automatically find 3/4 of a kinds.
+      }else if(combo.length>2){
+        // Combos larger than 2 may contain a run.
+        if(exports.isRun(combo)){
+          // console.log('Run of ' + combo.length + ' (this run)');
+          runs.push(combo.length);
+        }
+      }
+    }
+    runs.sort().reverse();
+    // Runs array is now in reverse sorted order. For example :
+    // if the hand was a double run of 4 it would look like [4, 4, 3, 3].
+    for (var i=0;i<runs.length;i++) {
+      if(runs[0]==runs[i]){
+        // Add to score the length of any runs that are as long as the longest run.
+        this.messageToSections(socketId, '-Run for ' + runs[i]);
+        score += runs[i];
+      }
+    }
+    // Check for flushes.
+    if(exports.isFlush(hand.cards)){
+      var flipMatches = hand.flip.suit == hand.cards[0].suit;
+      if(flipMatches){
+        // +5 for 5 card flush.
+        this.messageToSections(socketId, '-Flush for 5');
+        score += 5;
+      } else if(!hand.isCrib){
+        // +4 for 4 card flush if this is not the crib.
+        this.messageToSections(socketId, '-Flush for 4');
+        score += 4;
+      }
+    }
+    //Check for his nobs.
+    for(var i=0;i<hand.cards.length;i++){
+      if(hand.cards[i].face == 'J' && hand.cards[i].suit == hand.flip.suit){
+        this.messageToSections(socketId, '-His nobs for 1');
+        score += 1;
+      }
+    }
+    return score;
+  }
+
 
   this.newHand();
 
@@ -491,65 +568,6 @@ exports.Hand = function(cards, isCrib){
 
 }
 
-exports.scoreHand = function(hand){
-  var score = 0;
-  var runs = []; // Lengths of detected runs (3, 4 or 5).
-  console.log('Scoring: ' + hand.toString());
-  // Look at all possible combinations of cards.
-  var combos = exports.combinations(hand.fullHand());
-  // console.log(combos.length + ' combos')
-  for (var i=0;i<combos.length;i++) {
-    var combo = combos[i];
-    var cardSum = exports.addCardSum(combo); // Sum of play values for hards in combo.
-    // Check for 15s.
-    if(cardSum==15){
-      console.log('-15 for 2');
-      score += 2; //+2 for any 15.
-    }
-    // Check for pairs.
-    if(combo.length==2 && combo[0].face == combo[1].face){
-      console.log('-Pair for 2');
-      score += 2;//+2 for any pair. Will automatically find 3/4 of a kinds.
-    }else if(combo.length>2){
-      // Combos larger than 2 may contain a run.
-      if(exports.isRun(combo)){
-        // console.log('Run of ' + combo.length + ' (this run)');
-        runs.push(combo.length);
-      }
-    }
-  }
-  runs.sort().reverse();
-  // Runs array is now in reverse sorted order. For example :
-  // if the hand was a double run of 4 it would look like [4, 4, 3, 3].
-  for (var i=0;i<runs.length;i++) {
-    if(runs[0]==runs[i]){
-      // Add to score the length of any runs that are as long as the longest run.
-      console.log('-Run for ' + runs[i]);
-      score += runs[i];
-    }
-  }
-  // Check for flushes.
-  if(exports.isFlush(hand.cards)){
-    var flipMatches = hand.flip.suit == hand.cards[0].suit;
-    if(flipMatches){
-      // +5 for 5 card flush.
-      console.log('-Flush for 5');
-      score += 5;
-    } else if(!hand.isCrib){
-      // +4 for 4 card flush if this is not the crib.
-      console.log('-Flush for 4');
-      score += 4;
-    }
-  }
-  //Check for his nobs.
-  for(var i=0;i<hand.cards.length;i++){
-    if(hand.cards[i].face == 'J' && hand.cards[i].suit == hand.flip.suit){
-      console.log('-His nobs for 1');
-      score += 1;
-    }
-  }
-  return score;
-}
 exports.combinations = function(cards) {
   var fn = function(n, src, got, all) {
     if (n == 0) {

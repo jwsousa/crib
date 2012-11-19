@@ -185,6 +185,11 @@ function startNextHand(){
   socket.emit('start next hand');
 }
 
+function addMessage(section, message){
+  var element = $('#' + section + ' textarea');
+  element.append(message);
+}
+
 function startNewGame(){
   console.log('Starting new game.');
   initSocket();
@@ -262,6 +267,12 @@ function startNewGame(){
     console.debug('set play number received:');
     console.debug(data);
     setPlayNumber(data['section'], data['index'], data['playNumber']);
+  });
+
+  socket.on('add message', function(data){
+    console.debug('add message received:');
+    console.debug(data);
+    addMessage(data['section'], data['message']);
   });
 };
 
