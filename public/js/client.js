@@ -74,10 +74,13 @@ function Card(data){
 function setPlayNumber(section, index, playNumber){
   var cardElement = $('#' + section + ' .cards .card#card' + index);
   if(section == 'hand'){
-    cardElement.css('margin-bottom', 10*playNumber);
+    var margin = 'margin-bottom';
   } else {
-    cardElement.css('margin-top', 10*playNumber);
+    var margin = 'margin-top';
   }
+  cardElement.animate(
+    {cardElement.css(margin, 10*playNumber)},
+    1000);
 }
 
 function setCard(section, index, cardData){
@@ -191,6 +194,9 @@ function addMessage(section, message){
     element.append('\n');
   }
   element.append(message);
+  element.animate(
+    {scrollTop:element[0].scrollHeight - element.height()},
+    1000); ​
 }
 
 function startNewGame(){
