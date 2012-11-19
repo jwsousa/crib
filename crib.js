@@ -167,7 +167,7 @@ exports.Game = function(io){
     }
     var longestRun = this.checkLastRun();
     if(longestRun) {
-      this.messageToSections(socketId, 'Run for' + longestRun);
+      this.messageToSections(socketId, 'Run for ' + longestRun);
       score += longestRun;
     }
     this.addScore(socketId, score);
@@ -185,7 +185,7 @@ exports.Game = function(io){
   }
   this.requestNextCard = function(lastCardPlayer){
     if(this.playedCards['dealer'].length + this.playedCards['player'].length == 8){
-      console.log('Last card for one')
+      this.messageToSections(lastCardPlayer, 'Last card for one')
       this.addScore(lastCardPlayer, 1);
       this.handOver();
       return
@@ -201,10 +201,10 @@ exports.Game = function(io){
       return;
     }
     if(this.playCount == 31){
-      console.log('31 for 2')
+      this.messageToSections(lastCardPlayer, '31 for 2')
       this.addScore(lastCardPlayer, 2);
     }else{
-      console.log('Go for 1');
+      this.messageToSections(lastCardPlayer, 'Go for 1');
       this.addScore(lastCardPlayer, 1);
     }
     this.playedCards['play'] = [];

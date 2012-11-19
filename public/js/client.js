@@ -187,7 +187,9 @@ function startNextHand(){
 
 function addMessage(section, message){
   var element = $('#' + section + ' textarea');
-  element.append('\n');
+  if(element.html()){
+    element.append('\n');
+  }
   element.append(message);
 }
 
