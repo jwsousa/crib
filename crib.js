@@ -142,31 +142,35 @@ exports.Game = function(io){
                                             'index': cardIndex,
                                             'playNumber': playNumber});
     this.setPlayCount(this.playCount + card['playValue']);
-    this.addScore(socketId, this.checkPlayScore());
+    this.checkPlayScore(socketId);
     this.requestNextCard(socketId);
   }
-  this.checkPlayScore = function(){
+  this.checkPlayScore = function(socketId){
     var score = 0;
     var playCards = this.playedCards['play'];
     console.log('Checking play score for ' + exports.cardsToString(playCards));
     if(this.playCount==15){
-      console.log('15 for +2');
+      this.messageToSections(socketId, '15 for +2');
       score += 2;
     }
     if(playCards.length > 1 && playCards[0].face == playCards[1].face){
-      console.log('Pair for 2');
+      this.messageToSections(socketId, 'Pair for 2');
       score += 2;
       if(playCards.length > 2 && playCards[0].face == playCards[2].face){
-        console.log('Royal Pair for 4 more');
+        this.messageToSections(socketId, 'Royal Pair for 4 more');
         score += 4;
         if(playCards.length > 3 && playCards[0].face == playCards[3].face){
-          console.log('4 of a kind for 6 more');
+          this.messageToSections(socketId, '4 of a kind for 6 more');
           score += 6;
         }
       }
     }
-    score += this.checkLastRun();
-    return score;
+    var longestRun = this.checkLastRun();
+    if(longestRun) {
+      this.messageToSections(socketId, 'Run for' + longestRun);
+      score += longestRun;
+    }
+    addScore(socketId, score);
   }
   this.checkLastRun = function(){
     var playCards = this.playedCards['play'];
