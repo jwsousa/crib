@@ -192,7 +192,7 @@ function addMessage(section, message){
     element.append('\n');
   }
   element.append(message);
-  element.css('scrollTop', element[0].scrollHeight - element.height());
+  element.scrollTop(element[0].scrollHeight - element.height());
 }
 
 function startNewGame(){
