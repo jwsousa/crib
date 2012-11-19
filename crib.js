@@ -240,18 +240,17 @@ exports.Game = function(io){
     this.switchPlayers();
     this.newHand();
 
-    var game = this;
-    game.startNextHand(game.dealer);
-    game.startNextHand(game.player);
+    game.startNextHand(this.dealer);
+    game.startNextHand(this.player);
   }
   this.startNextHand = function(socketId){
     this.sockets[socketId].once('start next hand', function(){
       this.resetHand(socketId);
       this.pushHand(socketId);
       if(socketId == this.dealer){
-        game.send(game.dealer, 'You are the dealer. ' + game.dealer);
+        this.send(socketId, 'You are the dealer.');
       }else{
-        this.send(socketId, 'You are NOT the dealer. ');
+        this.send(socketId, 'You are NOT the dealer.');
       }
       this.emit(socketId, 'add message', {'section': 'hand', 'message': '===New Hand==='});
       this.emit(socketId, 'add message', {'section': 'otherhand', 'message': '===New Hand==='});
