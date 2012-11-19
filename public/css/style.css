@@ -34,10 +34,10 @@ body {
   /*height: 60px;*/
 }
 #hand .cards {
-  127px;
+  height: 127px;
 }
 #otherhand .cards {
-  127px;
+  height: 127px;
 }
 .game {
   text-align: center;
