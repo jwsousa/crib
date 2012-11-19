@@ -244,7 +244,7 @@ exports.Game = function(io){
     this.startNextHand(this.player);
   }
   this.startNextHand = function(socketId){
-    var game = game;
+    var game = this;
     this.sockets[socketId].once('start next hand', function(){
       game.resetHand(socketId);
       game.pushHand(socketId);
