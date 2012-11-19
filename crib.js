@@ -241,17 +241,20 @@ exports.Game = function(io){
     this.newHand();
 
     var game = this;
-    this.sockets[this.dealer].once('start next hand', function(){
-      game.resetHand(game.dealer);
-      game.pushHand(game.dealer);
-      game.send(game.dealer, 'You are the dealer. ' + game.dealer);
-      game.emit(game.dealer, 'add message', {'section': 'game', 'message': '===New Hand==='});
-    });
-    this.sockets[this.player].once('start next hand', function(){
-      game.resetHand(game.player);
-      game.pushHand(game.player);
-      game.send(game.player, 'You are NOT the dealer. ' + game.player);
-      game.emit(game.player, 'add message', {'section': 'game', 'message': '===New Hand==='});
+    game.startNextHand(game.dealer);
+    game.startNextHand(game.player);
+  }
+  this.startNextHand = function(socketId){
+    this.sockets[socketId].once('start next hand', function(){
+      this.resetHand(socketId);
+      this.pushHand(socketId);
+      if(socketId == this.dealer){
+        game.send(game.dealer, 'You are the dealer. ' + game.dealer);
+      }else{
+        this.send(socketId, 'You are NOT the dealer. ');
+      }
+      this.emit(socketId, 'add message', {'section': 'hand', 'message': '===New Hand==='});
+      this.emit(socketId, 'add message', {'section': 'otherhand', 'message': '===New Hand==='});
     });
   }
   this.scoreHands = function(){
