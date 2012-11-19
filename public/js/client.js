@@ -64,7 +64,7 @@ function Card(data){
 
   this.toHTML = function(){
     // html = $('<div/>').html(this.fancyString());
-    var html = $('<div/>').html(this.htmlCode());
+    var html = $('<p/>').html(this.htmlCode());
     html.addClass('card');
     html.addClass(this.suit);
     return html;
@@ -72,40 +72,40 @@ function Card(data){
 }
 
 function setPlayNumber(section, index, playNumber){
-  var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  var cardElement = $('#' + section + ' .cards .card#card' + index);
   if(section == 'hand'){
-    cardDiv.css('margin-bottom', 10*playNumber);
+    cardElement.css('margin-bottom', 10*playNumber);
   } else {
-    cardDiv.css('margin-top', 10*playNumber);
+    cardElement.css('margin-top', 10*playNumber);
   }
 }
 
 function setCard(section, index, cardData){
-  var cardDiv = $('#' + section + ' .cards .card#card' + index);
+  var cardElement = $('#' + section + ' .cards .card#card' + index);
   var card = new Card(cardData);
-  cardDiv.html(card.htmlCode());
-  cardDiv.addClass(card.suit);
-  cardDiv.addClass('flipped');
+  cardElement.html(card.htmlCode());
+  cardElement.addClass(card.suit);
+  cardElement.addClass('flipped');
 }
 
 function setCardsOnPage(section, cards){
-  var cardsDiv = $('#' + section + ' .cards');
-  cardsDiv.html('');
+  var cardsElement = $('#' + section + ' .cards');
+  cardsElement.html('');
   for (var i=0;i<cards.length;i++){
     var card = new Card(cards[i]);
-    var cardDiv = $('<div/>');
-    cardDiv.attr("id",'card'+i);
-    cardDiv.addClass('card');
-    cardDiv.html(card.htmlCode());
-    cardDiv.addClass(card.suit);
-    cardDiv.addClass('flipped');
-    cardsDiv.append(cardDiv);
+    var cardElement = $('<p/>');
+    cardElement.attr("id",'card'+i);
+    cardElement.addClass('card');
+    cardElement.html(card.htmlCode());
+    cardElement.addClass(card.suit);
+    cardElement.addClass('flipped');
+    cardsElement.append(cardElement);
   }
 }
 
 
 function makeUnflippedCard(index){
-  var card = $('<div/>');
+  var card = $('<p/>');
   card.attr("id",'card'+index);
   card.addClass('card');
   card.addClass('unflipped');
@@ -114,16 +114,16 @@ function makeUnflippedCard(index){
 }
 
 function setUnflipped(section, number){
-  var cardsDiv = $('#' + section + ' .cards');
-  cardsDiv.html('');
+  var cardsElement = $('#' + section + ' .cards');
+  cardsElement.html('');
   for(var i=0;i<number;i++)
-    cardsDiv.append(makeUnflippedCard(i));
+    cardsElement.append(makeUnflippedCard(i));
 }
 
 function setDisabled(section, index){
-  var cardDiv = $('#' + section + ' .cards .card#card' + index);
-  console.debug(cardDiv);
-  cardDiv.addClass('disabled');
+  var cardElement = $('#' + section + ' .cards .card#card' + index);
+  console.debug(cardElement);
+  cardElement.addClass('disabled');
 }
 
 function setCount(count){
