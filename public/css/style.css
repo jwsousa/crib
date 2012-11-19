@@ -33,6 +33,12 @@ body {
   margin: 10px 15px 10px 15px;
   /*height: 60px;*/
 }
+#hand .cards {
+  87px;
+}
+#otherhand .cards {
+  87px;
+}
 .game {
   text-align: center;
 }
