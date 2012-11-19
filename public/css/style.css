@@ -25,9 +25,11 @@ body {
 }
 #hand .card {
   vertical-align: bottom;
+  margin-bottom: 40px;
 }
 #otherhand .card {
   vertical-align: top;
+  margin-bottom: 40px;
 }
 .cards {
   margin: 10px 15px 10px 15px;
