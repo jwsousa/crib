@@ -245,11 +245,13 @@ exports.Game = function(io){
       game.resetHand(game.dealer);
       game.pushHand(game.dealer);
       game.send(game.dealer, 'You are the dealer. ' + game.dealer);
+      game.emit(game.dealer, 'add message', {'section': 'game', 'message': '===New Hand==='});
     });
     this.sockets[this.player].once('start next hand', function(){
       game.resetHand(game.player);
       game.pushHand(game.player);
       game.send(game.player, 'You are NOT the dealer. ' + game.player);
+      game.emit(game.player, 'add message', {'section': 'game', 'message': '===New Hand==='});
     });
   }
   this.scoreHands = function(){
