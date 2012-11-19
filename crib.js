@@ -170,7 +170,7 @@ exports.Game = function(io){
       this.messageToSections(socketId, 'Run for' + longestRun);
       score += longestRun;
     }
-    addScore(socketId, score);
+    this.addScore(socketId, score);
   }
   this.checkLastRun = function(){
     var playCards = this.playedCards['play'];
