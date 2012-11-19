@@ -102,4 +102,5 @@ body {
 }
 .section textarea {
   width: 500px;
+  background-image:url('/images/farmer_green2.png');
 }
