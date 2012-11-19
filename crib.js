@@ -240,8 +240,8 @@ exports.Game = function(io){
     this.switchPlayers();
     this.newHand();
 
-    game.startNextHand(this.dealer);
-    game.startNextHand(this.player);
+    this.startNextHand(this.dealer);
+    this.startNextHand(this.player);
   }
   this.startNextHand = function(socketId){
     this.sockets[socketId].once('start next hand', function(){
