@@ -74,9 +74,9 @@ function Card(data){
 function setPlayNumber(section, index, playNumber){
   var cardElement = $('#' + section + ' .cards .card#card' + index);
   if(section == 'hand'){
-    cardElement.animate({marginBottom: (10*playNumber)+'px'}, 1000);
+    cardElement.animate({marginBottom: (10*playNumber)+'px'}, 100);
   } else {
-    cardElement.animate({marginTop: (10*playNumber)+'px'}, 1000);
+    cardElement.animate({marginTop: (10*playNumber)+'px'}, 100);
   }
 
 }
@@ -192,9 +192,7 @@ function addMessage(section, message){
     element.append('\n');
   }
   element.append(message);
-  element.animate(
-    {scrollTop:element[0].scrollHeight - element.height()},
-    1000); ​
+  element.animate({scrollTop: element[0].scrollHeight - element.height}, 1000);
 }
 
 function startNewGame(){
