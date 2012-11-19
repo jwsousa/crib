@@ -104,3 +104,6 @@ body {
   width: 500px;
   background-image:url('/images/farmer_green2.png');
 }
+.section h3 {
+  margin: 0px;
+}
