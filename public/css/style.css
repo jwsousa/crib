@@ -100,3 +100,6 @@ body {
 #numbers.section h4:empty {
     display:none
 }
+.section textarea {
+  width: 500px;
+}
