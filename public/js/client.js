@@ -74,13 +74,11 @@ function Card(data){
 function setPlayNumber(section, index, playNumber){
   var cardElement = $('#' + section + ' .cards .card#card' + index);
   if(section == 'hand'){
-    var margin = 'margin-bottom';
+    cardElement.animate({'margin-bottom': (10*playNumber)+'px')}, 1000);
   } else {
-    var margin = 'margin-top';
+    cardElement.animate({'margin-top': (10*playNumber)+'px')}, 1000);
   }
-  cardElement.animate(
-    {cardElement.css(margin, 10*playNumber)},
-    1000);
+
 }
 
 function setCard(section, index, cardData){
