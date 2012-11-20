@@ -73,8 +73,13 @@ function Card(data){
 
 function setPlayNumber(section, index, playNumber){
   var cardElement = $('#' + section + ' .cards .card#card' + index);
-  var marginSize = section == 'hand' ? 10 * (4 - playNumber) : 10 * playNumber;
-  cardElement.animate({marginTop: marginSize+'px'}, 100);
+  var marginSize = 10 * (4 - playNumber);
+  if (section == 'hand'){
+    cardElement.animate({marginTop: marginSize+'px'}, 100);
+  }else{
+    cardElement.animate({marginBottom: marginSize+'px'}, 100);
+  }
+
 
 }
 
@@ -249,6 +254,7 @@ function startNewGame(){
   socket.on('enable all', function() {
     console.debug('enable all received:');
     $('.disabled').removeClass('disabled');
+    $('.card').addClass('handover');
   });
 
   socket.on('disconnect', function(){

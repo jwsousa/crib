@@ -1,5 +1,6 @@
 body {
   background-image:url('/images/farmer_green2.png');
+  padding-top: 20px;
 }
 .card {
   background: #ffffff;
@@ -8,11 +9,20 @@ body {
   padding: 5px 2px 4px 2px;
   border-style: solid;
   border-width: 2px;
-  font-size: 88px;
+  font-size: 90px;
   text-align: center;
   font-family: Symbola, cards;
-  line-height: 84px;
+  line-height: normal;
   margin: 0 2px;
+}
+#flip .card.handover {
+  font-size: 120px;
+}
+.card.selectable:active {
+  position: relative;
+  top: 1px;
+  color: #afafaf;
+  background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888));
 }
 .card.selectable:hover {
   /*border-color:black;*/
@@ -26,19 +36,17 @@ body {
 #hand .card {
   vertical-align: top;
   margin-top: 40px;
+  font-size: 120px;
+}
+#hand {
+  margin-top: 5px;
+}
+#crib .cards:not(:empty) {
+  margin-left: 20px;
 }
 #otherhand .card {
-  vertical-align: top;
-}
-.cards {
-  margin: 10px 15px 10px 15px;
-  /*height: 60px;*/
-}
-#hand .cards {
-  height: 127px;
-}
-#otherhand .cards {
-  height: 127px;
+  vertical-align: bottom;
+  margin-bottom: 40px;
 }
 .game {
   text-align: center;
@@ -95,6 +103,9 @@ body {
 .hidden {
   display: none;
 }
+#numbers.section {
+  margin: 5px 0px;
+}
 #numbers.section h4 {
   display: inline-block;
   padding: 3px 20px;
@@ -104,11 +115,13 @@ body {
   border-style: solid;
 }
 #numbers.section h4:empty {
-    display:none
+    display: none;
+    width: 0px;
 }
 .section textarea {
   width: 500px;
   background-image:url('/images/farmer_green2.png');
+  margin: 5px;
 }
 .section h3 {
   margin: 0px;

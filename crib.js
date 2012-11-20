@@ -114,6 +114,7 @@ exports.Game = function(io){
   this.gameWon = function(socketId){
     this.send(socketId, "You've won!");
     this.sendToOpponent(socketId, "You've lost!");
+    this.endGame();
   }
   this.cardPlayed = function(socketId, cardIndex){
     var role = this.roles[socketId];
