@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Symbola';
+  src: url('/webfonts/symbola_cards-webfont.eot');
+  src: url('/webfonts/symbola_cards-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/webfonts/symbola_cards-webfont.woff') format('woff'),
+       url('/webfonts/symbola_cards-webfont.ttf') format('truetype'),
+       url('/webfonts/symbola_cards-webfont.svg#symbolaregular') format('svg');
+}
+@font-face {
+  font-family: 'Quivira';
+  src: url('/webfonts/Quivira_cards.eot');
+  src: url('/webfonts/Quivira_cards.ttf') format('truetype');
