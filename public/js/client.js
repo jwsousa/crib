@@ -125,7 +125,7 @@ function setUnflipped(section, number){
 
 function setDisabled(section, index){
   var cardElement = $('#' + section + ' .cards .card#card' + index);
-  console.debug(cardElement);
+  //console.debug(cardElement);
   cardElement.addClass('disabled');
 }
 
@@ -147,7 +147,7 @@ function selectCards(number){
   $('.card').unbind('click').removeClass('selectable');
   var selectableCards = $('#hand .card:not(.disabled)');
   console.log('select card:');
-  console.debug(selectableCards);
+  //console.debug(selectableCards);
   selectableCards.addClass('selectable');
   selectableCards.click(function() {
     console.log('selectable card clicked');
@@ -204,20 +204,20 @@ function startNewGame(){
   initSocket();
 
   socket.on('message', function(message){
-    console.debug('message received: ' + message);
+    //console.debug('message received: ' + message);
     $('.message').html(message);
   });
 
   socket.on('set cards', function(data) {
-    console.debug('set cards received:');
-    console.debug(data);
+    console.log('set cards received:');
+    //console.debug(data);
     var cards = data['cards'];
     setCardsOnPage(data['section'], cards);
   });
 
   socket.on('set card', function(data) {
-    console.debug('set card received:');
-    console.debug(data);
+    console.log('set card received:');
+    //console.debug(data);
     var section = data['section'];
     var index = data['index'];
     var card = data['card'];
@@ -225,14 +225,14 @@ function startNewGame(){
   });
 
   socket.on('need cards', function(data) {
-    console.debug('need cards received:');
-    console.debug(data);
+    console.log('need cards received:');
+    //console.debug(data);
     selectCards(data['number']);
   });
 
   socket.on('set unflipped', function(data) {
-    console.debug('set unflipped received:');
-    console.debug(data);
+    console.log('set unflipped received:');
+    //console.debug(data);
     setUnflipped(data['section'], data['number']);
     if(data['section'] == 'hand'){
       $('#newHand.button').addClass('hidden');
@@ -240,19 +240,19 @@ function startNewGame(){
   });
 
   socket.on('set disabled', function(data) {
-    console.debug('set disabled received:');
-    console.debug(data);
+    console.log('set disabled received:');
+    //console.debug(data);
     setDisabled(data['section'], data['index']);
   });
 
   socket.on('set count', function(data) {
-    console.debug('set count received:');
-    console.debug(data);
+    console.log('set count received:');
+    //console.debug(data);
     setCount(data['count']);
   });
 
   socket.on('enable all', function() {
-    console.debug('enable all received:');
+    console.log('enable all received:');
     $('.disabled').removeClass('disabled');
     $('.card').addClass('handover');
   });
@@ -268,61 +268,21 @@ function startNewGame(){
   });
 
   socket.on('set scores', function(data){
-    console.debug('set scores received:');
-    console.debug(data);
+    console.log('set scores received:');
+    //console.debug(data);
     setScores(data['score'], data['opponentScore']);
   });
 
   socket.on('set play number', function(data){
-    console.debug('set play number received:');
-    console.debug(data);
+    console.log('set play number received:');
+    //console.debug(data);
     setPlayNumber(data['section'], data['index'], data['playNumber']);
   });
 
   socket.on('add message', function(data){
-    console.debug('add message received:');
-    console.debug(data);
+    console.log('add message received:');
+    //console.debug(data);
     addMessage(data['section'], data['message']);
   });
 };
-
-
-function newScoring(){
-  console.log('New scoring!');
-  var deck = makeDeck();
-  var hand = deck.slice(0,5);
-  var score = 0;
-  console.debug(hand);
-  setCardsOnPage('hand', hand);
-
-  var combos = combinations(hand);
-  console.debug(combos);
-  var runs = [];
-  for (var i=0;i<combos.length;i++) {
-    var combo = combos[i];
-    var cardSum = addCardSum(combo);
-    if(cardSum==15){
-      score += 2;
-    }
-    if(combo.length==2){
-      if(combo[0].face == combo[1].face){
-        score += 2;
-      }
-    }else if(combo.length>2){
-      printCards(combo);
-      if(isRun(combo)){
-        console.log('Run found!');
-        runs.push(combo.length);
-      }
-    }
-  }
-  runs.sort().reverse();
-  for (var i=0;i<runs.length;i++) {
-    if(runs[0]==runs[i]){
-      score += runs[i];
-    }
-  }
-
-  $('.message').html(score);
-}
 
