@@ -197,8 +197,10 @@ exports.Game = function(io){
       return;
     }
     if(this.canPlay(lastCardPlayer)) {
-      this.addScore(lastCardPlayer, 1);
       this.requestCard(lastCardPlayer);
+      if(nextCardPlayer.playedCards.length < 4) {
+        this.addScore(lastCardPlayer, 1);
+      }
       return;
     }
     if(this.playCount == 31){
@@ -210,7 +212,7 @@ exports.Game = function(io){
     }
     this.playedCards['play'] = [];
     this.setPlayCount(0);
-    this.requestCard(nextCardPlayer);
+    this.requestNextCard(lastCardPlayer);
   }
   this.canPlay = function(socketId){
     var role = this.roles[socketId];
