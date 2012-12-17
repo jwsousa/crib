@@ -198,7 +198,7 @@ exports.Game = function(io){
     }
     if(this.canPlay(lastCardPlayer)) {
       this.requestCard(lastCardPlayer);
-      if(nextCardPlayer.playedCards.length < 4) {
+      if(this.playedCards[this.roles[nextCardPlayer]].length < 4) {
         this.addScore(lastCardPlayer, 1);
       }
       return;
