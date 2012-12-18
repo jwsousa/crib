@@ -1,5 +1,5 @@
 body {
-  background-image:url('/images/farmer_green2.png');
+  background-image:url('/images/linedpaper_@2x.png');
   padding-top: 20px;
 }
 .card {
@@ -121,7 +121,7 @@ body {
 }
 .section textarea {
   width: 500px;
-  background-image:url('/images/farmer_green2.png');
+  background-image:url('/images/linedpaper_@2x.png');
   margin: 5px;
   border: none;
 }
