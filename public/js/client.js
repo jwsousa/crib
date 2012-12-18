@@ -235,7 +235,7 @@ function startNewGame(){
     //console.debug(data);
     setUnflipped(data['section'], data['number']);
     if(data['section'] == 'hand'){
-      $('#newHand.button').addClass('hidden');
+      $('.controls #newHand').addClass('hidden');
     }
   });
 
@@ -264,7 +264,7 @@ function startNewGame(){
 
   socket.on('new hand ready', function(){
     console.log('new hand ready received');
-    $('#newHand.button').removeClass('hidden');
+    $('.controls #newHand').removeClass('hidden');
   });
 
   socket.on('set scores', function(data){

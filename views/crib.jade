@@ -26,8 +26,14 @@ block content
 
   #bottommessage.message
   br
-  a#newGame.button(onClick='startNewGame();') Start New Game
-  a#newHand.button.hidden(onClick='startNextHand();') Start Next Hand
+  .controls
+    a#newGame.btn.btn-large.btn-primary(onClick='startNewGame();', href='#')
+      i.icon-thumbs-up.icon-large
+      | Start New Game
+
+    a#newHand.btn.btn-large.hidden(onClick='startNextHand();', href='#')
+      i.icon-hand-right.icon-large
+      | Start Next Hand
   #aaa
   script
     console.log('Start');
