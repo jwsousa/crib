@@ -27,6 +27,7 @@ body {
 .card.selectable:hover {
   /*border-color:black;*/
   -webkit-box-shadow: inset 0 0 4px 4px black;
+  cursor: pointer;
 
 }
 .card.selected {
